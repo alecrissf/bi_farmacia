@@ -1,0 +1,8 @@
+{
+  "name": "bi_farmacia",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "devDependencies": {
+    "prettier": "3.5.3"
+  }
+}
