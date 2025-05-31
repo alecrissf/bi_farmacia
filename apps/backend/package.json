@@ -5,6 +5,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate:prisma": "bunx prisma generate",
     "generate:auth": "bunx @better-auth/cli generate",
+    "migrate:dev": "bunx prisma migrate dev",
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
@@ -16,8 +17,10 @@
   },
   "devDependencies": {
     "@better-auth/cli": "^1.2.8",
+    "@mermaid-js/mermaid-cli": "^11.4.2",
     "bun-types": "latest",
-    "prisma": "^6.8.2"
+    "prisma": "^6.8.2",
+    "prisma-erd-generator": "^2.0.4"
   },
   "module": "src/index.js"
 }

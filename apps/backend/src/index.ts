@@ -1,7 +1,7 @@
+import cors from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
 import { Elysia } from 'elysia';
 import { auth, OpenAPI } from './lib/auth';
-import cors from '@elysiajs/cors';
 
 const betterAuth = new Elysia({ name: 'better-auth' })
   .mount(auth.handler)

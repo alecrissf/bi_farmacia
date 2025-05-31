@@ -45,3 +45,4 @@ package-lock.json
 /src/generated/prisma
 /prisma/dev.db
 /prisma/dev.db-journal
+/prisma/ERD.svg

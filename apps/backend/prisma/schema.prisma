@@ -6,8 +6,13 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+generator erd {
+  provider                  = "prisma-erd-generator"
+  includeRelationFromFields = true
+}
+
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -78,7 +83,7 @@ model Verification {
 
 model CategoriaProduto {
   id        Int        @id @default(autoincrement())
-  nome      String
+  nome      String     @db.VarChar(30)
   produtos  Produto[]
   promocoes Promocao[]
 
@@ -87,7 +92,7 @@ model CategoriaProduto {
 
 model MarcaProduto {
   id        Int        @id @default(autoincrement())
-  nome      String
+  nome      String     @db.VarChar(30)
   produtos  Produto[]
   promocoes Promocao[]
 
@@ -96,8 +101,8 @@ model MarcaProduto {
 
 model Produto {
   id          Int              @id @default(autoincrement())
-  codBarras   String
-  nome        String
+  codBarras   String           @db.VarChar(50)
+  nome        String           @db.VarChar(13)
   preco       Decimal
   qtdEstoque  Int
   categoriaId Int
@@ -114,7 +119,7 @@ model Produto {
 
 model Lote {
   id              Int      @id @default(autoincrement())
-  codigo          String
+  codigo          String   @db.VarChar(100)
   produtoId       Int
   produto         Produto  @relation(fields: [produtoId], references: [id])
   dataValidade    DateTime
@@ -127,8 +132,8 @@ model Lote {
 
 model Cliente {
   id        Int        @id @default(autoincrement())
-  cpf       String
-  nome      String
+  cpf       String     @db.VarChar(14)
+  nome      String     @db.VarChar(50)
   vendas    Venda[]
   enderecos Endereco[]
 
@@ -138,11 +143,11 @@ model Cliente {
 
 model Endereco {
   id          Int     @id @default(autoincrement())
-  cidade      String
-  bairro      String
-  rua         String
+  cidade      String  @db.VarChar(30)
+  bairro      String  @db.VarChar(30)
+  rua         String  @db.VarChar(60)
   numero      Int
-  complemento String
+  complemento String  @db.VarChar(20)
   clienteId   Int
   cliente     Cliente @relation(fields: [clienteId], references: [id])
 
@@ -151,7 +156,7 @@ model Endereco {
 
 model TipoPagamento {
   id        Int     @id @default(autoincrement())
-  descricao String
+  descricao String  @db.VarChar(50)
   vendas    Venda[]
 
   @@map("tipo_pagamento")
@@ -189,7 +194,7 @@ enum TipoPromocao {
 
 model Promocao {
   id                   Int                @id @default(autoincrement())
-  nome                 String
+  nome                 String             @db.VarChar(100)
   dataInicio           DateTime
   dataFim              DateTime
   tipo                 TipoPromocao
