@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Authentication Models
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  permissions   Int
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+// Pharmacy Models
+
+model CategoriaProduto {
+  id        Int        @id @default(autoincrement())
+  nome      String
+  produtos  Produto[]
+  promocoes Promocao[]
+
+  @@map("categoria_produto")
+}
+
+model MarcaProduto {
+  id        Int        @id @default(autoincrement())
+  nome      String
+  produtos  Produto[]
+  promocoes Promocao[]
+
+  @@map("marca_produto")
+}
+
+model Produto {
+  id          Int              @id @default(autoincrement())
+  codBarras   String
+  nome        String
+  preco       Decimal
+  qtdEstoque  Int
+  categoriaId Int
+  categoria   CategoriaProduto @relation(fields: [categoriaId], references: [id])
+  marcaId     Int
+  marca       MarcaProduto     @relation(fields: [marcaId], references: [id])
+  lotes       Lote[]
+  pedidos     Pedido[]
+  promocoes   Promocao[]
+
+  @@unique([codBarras])
+  @@map("produto")
+}
+
+model Lote {
+  id              Int      @id @default(autoincrement())
+  codigo          String
+  produtoId       Int
+  produto         Produto  @relation(fields: [produtoId], references: [id])
+  dataValidade    DateTime
+  dataRecebimento DateTime
+  qtdOriginal     Int
+
+  @@unique([codigo])
+  @@map("lote")
+}
+
+model Cliente {
+  id        Int        @id @default(autoincrement())
+  cpf       String
+  nome      String
+  vendas    Venda[]
+  enderecos Endereco[]
+
+  @@unique([cpf])
+  @@map("cliente")
+}
+
+model Endereco {
+  id          Int     @id @default(autoincrement())
+  cidade      String
+  bairro      String
+  rua         String
+  numero      Int
+  complemento String
+  clienteId   Int
+  cliente     Cliente @relation(fields: [clienteId], references: [id])
+
+  @@map("endereco")
+}
+
+model TipoPagamento {
+  id        Int     @id @default(autoincrement())
+  descricao String
+  vendas    Venda[]
+
+  @@map("tipo_pagamento")
+}
+
+model Venda {
+  id              Int           @id @default(autoincrement())
+  dataVenda       DateTime
+  clienteId       Int
+  cliente         Cliente       @relation(fields: [clienteId], references: [id])
+  tipoPagamentoId Int
+  tipoPagamento   TipoPagamento @relation(fields: [tipoPagamentoId], references: [id])
+  pedidos         Pedido[]
+
+  @@map("venda")
+}
+
+model Pedido {
+  id         Int       @id @default(autoincrement())
+  qtd        Int
+  vendaId    Int
+  venda      Venda     @relation(fields: [vendaId], references: [id])
+  produtoId  Int
+  produto    Produto   @relation(fields: [produtoId], references: [id])
+  promocaoId Int?
+  promocao   Promocao? @relation(fields: [promocaoId], references: [id])
+
+  @@map("pedido")
+}
+
+enum TipoPromocao {
+  Percentual
+  Fixo
+}
+
+model Promocao {
+  id                   Int                @id @default(autoincrement())
+  nome                 String
+  dataInicio           DateTime
+  dataFim              DateTime
+  tipo                 TipoPromocao
+  desconto             Decimal
+  pedidos              Pedido[]
+  produtosAplicaveis   Produto[]
+  categoriasAplicaveis CategoriaProduto[]
+  marcasAplicaveis     MarcaProduto[]
+
+  @@map("promocao")
+}

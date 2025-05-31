@@ -1,11 +1,11 @@
-# Elysia with Bun runtime
+# Backend BI
 
-## Development
+## Desenvolvendo
 
-To start the development server run:
+Para iniciar o servidor de desenvolvimento:
 
 ```bash
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+Então abra `http://localhost:3000/swagger` no navegador para acessar a documentação da API.
