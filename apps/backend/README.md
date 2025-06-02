@@ -21,6 +21,9 @@ Então abra `http://localhost:3000/swagger` no navegador para acessar a document
 docker-compose up -d
 ```
 
+> [!IMPORTANT]
+> Talvez seja necessário usar sudo no linux!
+
 2. Realizar as migrações:
 
 ```bash

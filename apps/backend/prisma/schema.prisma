@@ -163,13 +163,15 @@ model TipoPagamento {
 }
 
 model Venda {
-  id              Int           @id @default(autoincrement())
-  dataVenda       DateTime
-  clienteId       Int
-  cliente         Cliente       @relation(fields: [clienteId], references: [id])
-  tipoPagamentoId Int
-  tipoPagamento   TipoPagamento @relation(fields: [tipoPagamentoId], references: [id])
-  pedidos         Pedido[]
+  id                  Int                @id @default(autoincrement())
+  dataVenda           DateTime
+  clienteId           Int
+  cliente             Cliente            @relation(fields: [clienteId], references: [id])
+  tipoPagamentoId     Int
+  tipoPagamento       TipoPagamento      @relation(fields: [tipoPagamentoId], references: [id])
+  pedidos             Pedido[]
+  campanhaMarketingId Int?
+  campanhaMarketing   CampanhaMarketing? @relation(fields: [campanhaMarketingId], references: [id])
 
   @@map("venda")
 }
@@ -205,4 +207,15 @@ model Promocao {
   marcasAplicaveis     MarcaProduto[]
 
   @@map("promocao")
+}
+
+model CampanhaMarketing {
+  id         Int      @id @default(autoincrement())
+  nome       String   @db.VarChar(100)
+  dataInicio DateTime
+  dataFim    DateTime
+  tipo       String   @db.VarChar(50)
+  vendas     Venda[]
+
+  @@map("campanha_marketing")
 }
