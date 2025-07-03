@@ -22,7 +22,7 @@ docker-compose up -d
 ```
 
 > [!IMPORTANT]
-> Talvez seja necessário usar sudo no linux!
+> Talvez seja necessário usar sudo no linux! (pro docker-compose)
 
 2. Realizar as migrações:
 
@@ -33,5 +33,5 @@ bun run migrate:dev
 3. Gerar o código do cliente:
 
 ```bash
-bun run migrate:dev
+bun run generate:prisma
 ```

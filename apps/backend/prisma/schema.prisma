@@ -101,13 +101,13 @@ model MarcaProduto {
 
 model Produto {
   id          Int              @id @default(autoincrement())
-  codBarras   String           @db.VarChar(50)
+  codBarras   String           @map("codbarras") @db.VarChar(50)
   nome        String           @db.VarChar(13)
   preco       Decimal
-  qtdEstoque  Int
-  categoriaId Int
+  qtdEstoque  Int              @map("qtd_estoque")
+  categoriaId Int              @map("id_categoria")
   categoria   CategoriaProduto @relation(fields: [categoriaId], references: [id])
-  marcaId     Int
+  marcaId     Int              @map("id_marca")
   marca       MarcaProduto     @relation(fields: [marcaId], references: [id])
   lotes       Lote[]
   pedidos     Pedido[]
@@ -120,11 +120,11 @@ model Produto {
 model Lote {
   id              Int      @id @default(autoincrement())
   codigo          String   @db.VarChar(100)
-  produtoId       Int
+  produtoId       Int      @map("id_produto")
   produto         Produto  @relation(fields: [produtoId], references: [id])
-  dataValidade    DateTime
-  dataRecebimento DateTime
-  qtdOriginal     Int
+  dataValidade    DateTime @map("data_validade")
+  dataRecebimento DateTime @map("data_recebimento")
+  qtdOriginal     Int      @map("qtd_original")
 
   @@unique([codigo])
   @@map("lote")
@@ -148,7 +148,7 @@ model Endereco {
   rua         String  @db.VarChar(60)
   numero      Int
   complemento String  @db.VarChar(20)
-  clienteId   Int
+  clienteId   Int     @map("id_cliente")
   cliente     Cliente @relation(fields: [clienteId], references: [id])
 
   @@map("endereco")
@@ -164,13 +164,13 @@ model TipoPagamento {
 
 model Venda {
   id                  Int                @id @default(autoincrement())
-  dataVenda           DateTime
-  clienteId           Int
+  dataVenda           DateTime           @map("data_venda")
+  clienteId           Int                @map("id_cliente")
   cliente             Cliente            @relation(fields: [clienteId], references: [id])
-  tipoPagamentoId     Int
+  tipoPagamentoId     Int                @map("id_tipoPagamento")
   tipoPagamento       TipoPagamento      @relation(fields: [tipoPagamentoId], references: [id])
   pedidos             Pedido[]
-  campanhaMarketingId Int?
+  campanhaMarketingId Int?               @map("id_campanhaMarketing")
   campanhaMarketing   CampanhaMarketing? @relation(fields: [campanhaMarketingId], references: [id])
 
   @@map("venda")
@@ -179,11 +179,11 @@ model Venda {
 model Pedido {
   id         Int       @id @default(autoincrement())
   qtd        Int
-  vendaId    Int
+  vendaId    Int       @map("id_venda")
   venda      Venda     @relation(fields: [vendaId], references: [id])
-  produtoId  Int
+  produtoId  Int       @map("id_produto")
   produto    Produto   @relation(fields: [produtoId], references: [id])
-  promocaoId Int?
+  promocaoId Int?      @map("id_promocao")
   promocao   Promocao? @relation(fields: [promocaoId], references: [id])
 
   @@map("pedido")
@@ -197,8 +197,8 @@ enum TipoPromocao {
 model Promocao {
   id                   Int                @id @default(autoincrement())
   nome                 String             @db.VarChar(100)
-  dataInicio           DateTime
-  dataFim              DateTime
+  dataInicio           DateTime           @map("data_inicio")
+  dataFim              DateTime           @map("data_fim")
   tipo                 TipoPromocao
   desconto             Decimal
   pedidos              Pedido[]
@@ -212,8 +212,8 @@ model Promocao {
 model CampanhaMarketing {
   id         Int      @id @default(autoincrement())
   nome       String   @db.VarChar(100)
-  dataInicio DateTime
-  dataFim    DateTime
+  dataInicio DateTime @map("data_inicio")
+  dataFim    DateTime @map("data_fim")
   tipo       String   @db.VarChar(50)
   vendas     Venda[]
 
