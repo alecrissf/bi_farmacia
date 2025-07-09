@@ -1,4 +1,4 @@
-import { addPromocao } from "../dto/promocao";
+import { AddPromocaoDto } from "../dto/promocao";
 import Repository from "../repositories/promocao.repository";
 
 export async function findAll() {
@@ -6,7 +6,7 @@ export async function findAll() {
   return result;
 }
 
-export async function add(data: addPromocao) {
+export async function add(data: AddPromocaoDto) {
   await Repository.add(data);
 }
 

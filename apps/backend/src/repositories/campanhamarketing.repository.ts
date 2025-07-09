@@ -14,13 +14,13 @@ class CampanhamarketingRepository {
     return await prisma.campanha_marketing.create({ data });
   }
 
-  async findByNome(nome: string) {
+  async findByName(nome: string) {
     return await prisma.campanha_marketing.findUnique({
       where: { nome }
     });
   }
 
-  async removeByNome(nome: string) {
+  async removeByName(nome: string) {
     return await prisma.campanha_marketing.delete({
       where: { nome }
     });

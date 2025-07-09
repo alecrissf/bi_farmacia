@@ -14,13 +14,13 @@ class MarcaprodutoRepository {
     return await prisma.marca_produto.create({ data });
   }
 
-  async findByNome(nome: string) {
+  async findByName(nome: string) {
     return await prisma.marca_produto.findUnique({
       where: { nome }
     });
   }
 
-  async removeByNome(nome: string) {
+  async removeByName(nome: string) {
     return await prisma.marca_produto.delete({
       where: { nome }
     });

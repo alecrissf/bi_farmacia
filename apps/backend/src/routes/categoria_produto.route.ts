@@ -30,6 +30,6 @@ export const categoriaRoutes = (app : Elysia ) => {
      
     })
   })
-  return app; // <--- ESSA LINHA É A CORREÇÃO PRINCIPAL
+  return app; 
 
 }

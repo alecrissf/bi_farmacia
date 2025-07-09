@@ -1,8 +1,34 @@
-import { Elysia } from 'elysia';
-import * as handler from '../handler/tipopagamento.handler';
+import { Elysia , t } from 'elysia';
+import { findAll, add, findByPayment, removeByPayment} from '../handler/tipopagamento.handler'
 
-export const tipopagamentoRoutes = new Elysia({ prefix: '/tipopagamento' })
-  .get('/', async () => await handler.findAll())
-  .post('/', async ({ body }) => await handler.add(body))
-  .get('/:name', async ({ params }) => await handler.findByName(params.name))
-  .delete('/:name', async ({ params }) => await handler.removeByName(params.name));
+export const tipoPagamentoRoutes = (app: Elysia) => {
+    app.get('/pagamento', async () => {
+        const pedidos = await findAll();
+        return pedidos;
+    });
+
+    app.get('/pagamento/:id', async ({ params }) => {
+        const pedido = await findByPayment(parseInt(params.id));
+        return pedido;
+    });
+
+    app.delete('/pagamento/:id', async ({ params }) => {
+        await removeByPayment(parseInt(params.id));
+        return {
+            response: 'success removed',
+        };
+    });
+
+    app.post('/pagamento', async ({ body }) => {
+        await add(body);
+        return {
+            response: 'success added',
+        };
+    }, 
+    {  body: t.Object({
+        vendas: t.Number(),
+        descricao: t.String(),
+        })
+    });
+  return app;
+};

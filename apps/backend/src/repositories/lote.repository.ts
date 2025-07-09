@@ -14,13 +14,13 @@ class LoteRepository {
     return await prisma.lote.create({ data });
   }
 
-  async findByCodigo(codigo: string) {
+  async findByCodigo(codigo: number) {
     return await prisma.lote.findUnique({
       where: { codigo }
     });
   }
 
-  async removeByCodigo(codigo: string) {
+  async removeByCodigo(codigo: number) {
     return await prisma.lote.delete({
       where: { codigo }
     });

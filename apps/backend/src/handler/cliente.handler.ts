@@ -11,10 +11,10 @@ export async function add(data: AddClienteDto) {
 }
 
 export async function findByName(name: string) {
-  const result = await Repository.findByName(name);
+  const result = await Repository.findByCpf(name);
   return result;
 }
 
 export async function removeByName(name: string) {
-  await Repository.removeByName(name);
+  await Repository.removeByCpf(name);
 }

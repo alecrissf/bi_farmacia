@@ -14,13 +14,13 @@ class PromocaoRepository {
     return await prisma.promocao.create({ data });
   }
 
-  async findByNome(nome: string) {
+  async findByName(nome: string) {
     return await prisma.promocao.findUnique({
       where: { nome }
     });
   }
 
-  async removeByNome(nome: string) {
+  async removeByName(nome: string) {
     return await prisma.promocao.delete({
       where: { nome }
     });

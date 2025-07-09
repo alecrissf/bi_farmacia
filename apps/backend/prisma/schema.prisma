@@ -3,28 +3,14 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  //output   = "../src/generated/prisma"
 }
 
-generator erd {
-  provider                  = "prisma-erd-generator"
-  includeRelationFromFields = true
-}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-//schema.prisma
-model UserRole {
-  ADMIN
-  EDITOR
-  VIEWER
-  // Add other roles as needed
-}
-
-
 // Authentication Models
 
 model User {

@@ -1,4 +1,4 @@
-import { addPedido } from "../dto/pedido";
+import { AddPedidoDto } from "../dto/pedido";
 import Repository from "../repositories/pedido.repository";
 
 export async function findAll() {
@@ -6,15 +6,15 @@ export async function findAll() {
   return result;
 }
 
-export async function add(data: addPedido) {
+export async function add(data: AddPedidoDto) {
   await Repository.add(data);
 }
 
-export async function findByName(name: string) {
-  const result = await Repository.findByName(name);
+export async function findById(id: number) {
+  const result = await Repository.findById(id);
   return result;
 }
 
-export async function removeByName(name: string) {
-  await Repository.removeByName(name);
+export async function removeById(id: number) {
+  await Repository.removeById(id);
 }

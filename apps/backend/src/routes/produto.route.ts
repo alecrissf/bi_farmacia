@@ -1,8 +1,39 @@
-import { Elysia } from 'elysia';
-import * as handler from '../handler/produto.handler';
+import { Elysia , t } from 'elysia';
+import { findAll, add, findByCodBarras, removeByCodBarras } from '../handler/produto.handler'
 
-export const produtoRoutes = new Elysia({ prefix: '/produto' })
-  .get('/', async () => await handler.findAll())
-  .post('/', async ({ body }) => await handler.add(body))
-  .get('/:name', async ({ params }) => await handler.findByName(params.name))
-  .delete('/:name', async ({ params }) => await handler.removeByName(params.name));
+export const produtoRoutes = (app: Elysia) => {
+    app.get('/produto', async () => {
+        const pedidos = await findAll();
+        return pedidos;
+    });
+
+    app.get('/produto/:code', async ({ params }) => {
+        const pedido = await findByCodBarras(params.code);
+        return pedido;
+    });
+
+    app.delete('/produto/:code', async ({ params }) => {
+        await removeByCodBarras(params.code);
+        return {
+            response: 'success removed',
+        };
+    });
+
+    app.post('/produto', async ({ body }) => {
+        await add(body);
+        return {
+            response: 'success added',
+        };
+    }, 
+    {  body: t.Object({
+            codBarras: t.String(),
+            nome: t.String(),
+            preco: t.Number(),
+            qtdEstoque: t.Number(),
+            categoriaId: t.Number(),
+            marcaId: t.Number()
+        })
+    });
+
+    return app;
+};
