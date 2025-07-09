@@ -1,0 +1,1 @@
+export * from '../categoriaproduto/addCategoriaProduto.dto';
