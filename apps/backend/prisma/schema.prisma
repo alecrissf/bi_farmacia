@@ -17,13 +17,12 @@ datasource db {
 }
 
 //schema.prisma
-model UserRole {
-  ADMIN
-  EDITOR
-  VIEWER
-  // Add other roles as needed
-}
-
+// model UserRole {
+//   ADMIN
+//   EDITOR
+//   VIEWER
+//   // Add other roles as needed
+// }
 
 // Authentication Models
 
@@ -111,13 +110,13 @@ model MarcaProduto {
 model Produto {
   id          Int              @id @default(autoincrement())
   codBarras   String           @map("codbarras") @db.VarChar(50)
-  nome        String           @db.VarChar(13)
+  nome        String           @db.VarChar(100)
   preco       Decimal
   qtdEstoque  Int              @map("qtd_estoque")
   categoriaId Int              @map("id_categoria")
-  categoria   CategoriaProduto @relation(fields: [categoriaId], references: [id])
+  categoria   CategoriaProduto @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
   marcaId     Int              @map("id_marca")
-  marca       MarcaProduto     @relation(fields: [marcaId], references: [id])
+  marca       MarcaProduto     @relation(fields: [marcaId], references: [id], onDelete: Cascade)
   lotes       Lote[]
   pedidos     Pedido[]
   promocoes   Promocao[]
@@ -130,7 +129,7 @@ model Lote {
   id              Int      @id @default(autoincrement())
   codigo          String   @db.VarChar(100)
   produtoId       Int      @map("id_produto")
-  produto         Produto  @relation(fields: [produtoId], references: [id])
+  produto         Produto  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
   dataValidade    DateTime @map("data_validade")
   dataRecebimento DateTime @map("data_recebimento")
   qtdOriginal     Int      @map("qtd_original")
@@ -158,7 +157,7 @@ model Endereco {
   numero      Int
   complemento String  @db.VarChar(20)
   clienteId   Int     @map("id_cliente")
-  cliente     Cliente @relation(fields: [clienteId], references: [id])
+  cliente     Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
 
   @@map("endereco")
 }
@@ -175,12 +174,12 @@ model Venda {
   id                  Int                @id @default(autoincrement())
   dataVenda           DateTime           @map("data_venda")
   clienteId           Int                @map("id_cliente")
-  cliente             Cliente            @relation(fields: [clienteId], references: [id])
+  cliente             Cliente            @relation(fields: [clienteId], references: [id], onDelete: Cascade)
   tipoPagamentoId     Int                @map("id_tipoPagamento")
-  tipoPagamento       TipoPagamento      @relation(fields: [tipoPagamentoId], references: [id])
+  tipoPagamento       TipoPagamento      @relation(fields: [tipoPagamentoId], references: [id], onDelete: Cascade)
   pedidos             Pedido[]
   campanhaMarketingId Int?               @map("id_campanhaMarketing")
-  campanhaMarketing   CampanhaMarketing? @relation(fields: [campanhaMarketingId], references: [id])
+  campanhaMarketing   CampanhaMarketing? @relation(fields: [campanhaMarketingId], references: [id], onDelete: SetNull)
 
   @@map("venda")
 }
@@ -189,11 +188,11 @@ model Pedido {
   id         Int       @id @default(autoincrement())
   qtd        Int
   vendaId    Int       @map("id_venda")
-  venda      Venda     @relation(fields: [vendaId], references: [id])
+  venda      Venda     @relation(fields: [vendaId], references: [id], onDelete: Cascade)
   produtoId  Int       @map("id_produto")
-  produto    Produto   @relation(fields: [produtoId], references: [id])
+  produto    Produto   @relation(fields: [produtoId], references: [id], onDelete: Cascade)
   promocaoId Int?      @map("id_promocao")
-  promocao   Promocao? @relation(fields: [promocaoId], references: [id])
+  promocao   Promocao? @relation(fields: [promocaoId], references: [id], onDelete: Cascade)
 
   @@map("pedido")
 }

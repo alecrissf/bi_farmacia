@@ -16,45 +16,46 @@ import { promocaoRoutes } from './routes/promocao.route';
 import { campanhamarketingRoutes } from './routes/campanhamarketing.route';
 
 const betterAuth = new Elysia({ name: 'better-auth' })
-    .mount(auth.handler)
-    .macro({
-        auth: {
-            async resolve({ status, request: { headers } }) {
-                const session = await auth.api.getSession({ headers });
-                if (!session) return status(401);
-                return {
-                    user: session.user,
-                    session: session.session,
-                };
-            },
-        },
-    });
+  .mount(auth.handler)
+  .macro({
+    auth: {
+      async resolve({ status, request: { headers } }) {
+        const session = await auth.api.getSession({ headers });
+        if (!session) return status(401);
+        return {
+          user: session.user,
+          session: session.session,
+        };
+      },
+    },
+  });
 
 const app = new Elysia()
-    .use(
-        swagger({
-            documentation: {
-                components: await OpenAPI.components,
-                paths: await OpenAPI.getPaths(),
-            },
-        }),
-    )
-    .use(cors())
-    .use(betterAuth)
-    .get('/auth', () => 'Hello Elysia', { auth: false })
-    .use(categoriaRoutes)
-    .use(marcaprodutoRoutes)
-    .use(produtoRoutes)
-    .use(loteRoutes)
-    .use(clienteRoutes)
-    .use(enderecoRoutes)
-    .use(tipopagamentoRoutes)
-    .use(vendaRoutes)
-    .use(pedidoRoutes)
-    .use(promocaoRoutes)
-    .use(campanhamarketingRoutes)
-    .listen(3000);
+  .use(
+    swagger({
+      documentation: {
+        components: await OpenAPI.components,
+        paths: await OpenAPI.getPaths(),
+      },
+    }),
+  )
+  .use(cors())
+  .use(betterAuth)
+  .use(categoriaRoutes)
+  .use(marcaprodutoRoutes)
+  .use(produtoRoutes)
+  .use(loteRoutes)
+  .use(clienteRoutes)
+  .use(enderecoRoutes)
+  .use(tipopagamentoRoutes)
+  .use(vendaRoutes)
+  .use(pedidoRoutes)
+  .use(promocaoRoutes)
+  .use(campanhamarketingRoutes)
+  .listen(3000);
+
+export type App = typeof app;
 
 console.log(
-    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );

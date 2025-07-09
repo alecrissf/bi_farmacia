@@ -79,12 +79,12 @@ CREATE TABLE "marca_produto" (
 -- CreateTable
 CREATE TABLE "produto" (
     "id" SERIAL NOT NULL,
-    "codBarras" VARCHAR(50) NOT NULL,
-    "nome" VARCHAR(13) NOT NULL,
+    "codbarras" VARCHAR(50) NOT NULL,
+    "nome" VARCHAR(100) NOT NULL,
     "preco" DECIMAL(65,30) NOT NULL,
-    "qtdEstoque" INTEGER NOT NULL,
-    "categoriaId" INTEGER NOT NULL,
-    "marcaId" INTEGER NOT NULL,
+    "qtd_estoque" INTEGER NOT NULL,
+    "id_categoria" INTEGER NOT NULL,
+    "id_marca" INTEGER NOT NULL,
 
     CONSTRAINT "produto_pkey" PRIMARY KEY ("id")
 );
@@ -93,10 +93,10 @@ CREATE TABLE "produto" (
 CREATE TABLE "lote" (
     "id" SERIAL NOT NULL,
     "codigo" VARCHAR(100) NOT NULL,
-    "produtoId" INTEGER NOT NULL,
-    "dataValidade" TIMESTAMP(3) NOT NULL,
-    "dataRecebimento" TIMESTAMP(3) NOT NULL,
-    "qtdOriginal" INTEGER NOT NULL,
+    "id_produto" INTEGER NOT NULL,
+    "data_validade" TIMESTAMP(3) NOT NULL,
+    "data_recebimento" TIMESTAMP(3) NOT NULL,
+    "qtd_original" INTEGER NOT NULL,
 
     CONSTRAINT "lote_pkey" PRIMARY KEY ("id")
 );
@@ -118,7 +118,7 @@ CREATE TABLE "endereco" (
     "rua" VARCHAR(60) NOT NULL,
     "numero" INTEGER NOT NULL,
     "complemento" VARCHAR(20) NOT NULL,
-    "clienteId" INTEGER NOT NULL,
+    "id_cliente" INTEGER NOT NULL,
 
     CONSTRAINT "endereco_pkey" PRIMARY KEY ("id")
 );
@@ -134,9 +134,10 @@ CREATE TABLE "tipo_pagamento" (
 -- CreateTable
 CREATE TABLE "venda" (
     "id" SERIAL NOT NULL,
-    "dataVenda" TIMESTAMP(3) NOT NULL,
-    "clienteId" INTEGER NOT NULL,
-    "tipoPagamentoId" INTEGER NOT NULL,
+    "data_venda" TIMESTAMP(3) NOT NULL,
+    "id_cliente" INTEGER NOT NULL,
+    "id_tipoPagamento" INTEGER NOT NULL,
+    "id_campanhaMarketing" INTEGER,
 
     CONSTRAINT "venda_pkey" PRIMARY KEY ("id")
 );
@@ -145,9 +146,9 @@ CREATE TABLE "venda" (
 CREATE TABLE "pedido" (
     "id" SERIAL NOT NULL,
     "qtd" INTEGER NOT NULL,
-    "vendaId" INTEGER NOT NULL,
-    "produtoId" INTEGER NOT NULL,
-    "promocaoId" INTEGER,
+    "id_venda" INTEGER NOT NULL,
+    "id_produto" INTEGER NOT NULL,
+    "id_promocao" INTEGER,
 
     CONSTRAINT "pedido_pkey" PRIMARY KEY ("id")
 );
@@ -156,12 +157,23 @@ CREATE TABLE "pedido" (
 CREATE TABLE "promocao" (
     "id" SERIAL NOT NULL,
     "nome" VARCHAR(100) NOT NULL,
-    "dataInicio" TIMESTAMP(3) NOT NULL,
-    "dataFim" TIMESTAMP(3) NOT NULL,
+    "data_inicio" TIMESTAMP(3) NOT NULL,
+    "data_fim" TIMESTAMP(3) NOT NULL,
     "tipo" "TipoPromocao" NOT NULL,
     "desconto" DECIMAL(65,30) NOT NULL,
 
     CONSTRAINT "promocao_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "campanha_marketing" (
+    "id" SERIAL NOT NULL,
+    "nome" VARCHAR(100) NOT NULL,
+    "data_inicio" TIMESTAMP(3) NOT NULL,
+    "data_fim" TIMESTAMP(3) NOT NULL,
+    "tipo" VARCHAR(50) NOT NULL,
+
+    CONSTRAINT "campanha_marketing_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -195,7 +207,7 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "produto_codBarras_key" ON "produto"("codBarras");
+CREATE UNIQUE INDEX "produto_codbarras_key" ON "produto"("codbarras");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "lote_codigo_key" ON "lote"("codigo");
@@ -219,31 +231,34 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "produto" ADD CONSTRAINT "produto_categoriaId_fkey" FOREIGN KEY ("categoriaId") REFERENCES "categoria_produto"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "produto" ADD CONSTRAINT "produto_id_categoria_fkey" FOREIGN KEY ("id_categoria") REFERENCES "categoria_produto"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "produto" ADD CONSTRAINT "produto_marcaId_fkey" FOREIGN KEY ("marcaId") REFERENCES "marca_produto"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "produto" ADD CONSTRAINT "produto_id_marca_fkey" FOREIGN KEY ("id_marca") REFERENCES "marca_produto"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "lote" ADD CONSTRAINT "lote_produtoId_fkey" FOREIGN KEY ("produtoId") REFERENCES "produto"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "lote" ADD CONSTRAINT "lote_id_produto_fkey" FOREIGN KEY ("id_produto") REFERENCES "produto"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "endereco" ADD CONSTRAINT "endereco_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "cliente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "endereco" ADD CONSTRAINT "endereco_id_cliente_fkey" FOREIGN KEY ("id_cliente") REFERENCES "cliente"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "venda" ADD CONSTRAINT "venda_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "cliente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "venda" ADD CONSTRAINT "venda_id_cliente_fkey" FOREIGN KEY ("id_cliente") REFERENCES "cliente"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "venda" ADD CONSTRAINT "venda_tipoPagamentoId_fkey" FOREIGN KEY ("tipoPagamentoId") REFERENCES "tipo_pagamento"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "venda" ADD CONSTRAINT "venda_id_tipoPagamento_fkey" FOREIGN KEY ("id_tipoPagamento") REFERENCES "tipo_pagamento"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pedido" ADD CONSTRAINT "pedido_vendaId_fkey" FOREIGN KEY ("vendaId") REFERENCES "venda"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "venda" ADD CONSTRAINT "venda_id_campanhaMarketing_fkey" FOREIGN KEY ("id_campanhaMarketing") REFERENCES "campanha_marketing"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pedido" ADD CONSTRAINT "pedido_produtoId_fkey" FOREIGN KEY ("produtoId") REFERENCES "produto"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "pedido" ADD CONSTRAINT "pedido_id_venda_fkey" FOREIGN KEY ("id_venda") REFERENCES "venda"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pedido" ADD CONSTRAINT "pedido_promocaoId_fkey" FOREIGN KEY ("promocaoId") REFERENCES "promocao"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pedido" ADD CONSTRAINT "pedido_id_produto_fkey" FOREIGN KEY ("id_produto") REFERENCES "produto"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pedido" ADD CONSTRAINT "pedido_id_promocao_fkey" FOREIGN KEY ("id_promocao") REFERENCES "promocao"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CategoriaProdutoToPromocao" ADD CONSTRAINT "_CategoriaProdutoToPromocao_A_fkey" FOREIGN KEY ("A") REFERENCES "categoria_produto"("id") ON DELETE CASCADE ON UPDATE CASCADE;
