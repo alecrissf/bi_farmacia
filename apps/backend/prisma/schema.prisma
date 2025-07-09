@@ -16,6 +16,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//schema.prisma
+model UserRole {
+  ADMIN
+  EDITOR
+  VIEWER
+  // Add other roles as needed
+}
+
+
 // Authentication Models
 
 model User {
