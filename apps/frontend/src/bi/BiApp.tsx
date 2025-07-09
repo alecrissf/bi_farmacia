@@ -1,74 +1,41 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Card } from './components/Card';
-import {
-  ChartData,
-  CircularChart,
-  CircularChartProps,
-} from './components/CircularChart';
 import { FiToggleLeft, FiToggleRight } from 'react-icons/fi';
-import {
-  Bar,
-  BarChart,
-  LabelList,
-  Legend,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts';
-
-const vendasPorCat = [
-  { name: 'Referência', value: 400, fill: '#0088FE' },
-  { name: 'Genérico', value: 300, fill: '#00C49F' },
-  { name: 'Similar', value: 100, fill: '#FFBB28' },
-];
+import { TopProductsChart } from './components/graphs/TopProductsChart';
+import { VendasPorCatChart } from './components/graphs/VendasPorCatChart';
+import { VendasPorPagChart } from './components/graphs/VendasPorPagChart';
+import { VendasPorPromChart } from './components/graphs/VendasPorPromChart';
+import { VendasPorMarketingChart } from './components/graphs/VendasPorMarketingChart';
 
 const graphs: GraphCardData[] = [
   {
     title: 'Top 5 Produtos Mais Vendidos',
     render: ({ isFullscreen }) => (
-      <ResponsiveContainer className={isFullscreen ? 'text-4xl' : ''}>
-        <BarChart data={vendasPorCat} margin={{ top: 60 }}>
-          <Bar dataKey="value" isAnimationActive={false}>
-            <LabelList dataKey="name" position="top" />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <TopProductsChart isFullscreen={isFullscreen} />
     ),
   },
   {
     title: 'Total de Vendas por Categoria',
     render: ({ isFullscreen }) => (
-      <CircularChart
-        data={vendasPorCat}
-        className={isFullscreen ? 'text-4xl' : ''}
-      />
+      <VendasPorCatChart isFullscreen={isFullscreen} />
     ),
   },
   {
     title: 'Total de Vendas por Forma de Pagamento',
     render: ({ isFullscreen }) => (
-      <CircularChart
-        data={vendasPorCat}
-        className={isFullscreen ? 'text-4xl' : ''}
-      />
+      <VendasPorPagChart isFullscreen={isFullscreen} />
     ),
   },
   {
     title: 'Total de Vendas por Tipo de Promoção',
     render: ({ isFullscreen }) => (
-      <CircularChart
-        data={vendasPorCat}
-        className={isFullscreen ? 'text-4xl' : ''}
-      />
+      <VendasPorPromChart isFullscreen={isFullscreen} />
     ),
   },
   {
     title: 'Total de Vendas por Campanha de Marketing',
     render: ({ isFullscreen }) => (
-      <CircularChart
-        data={vendasPorCat}
-        className={isFullscreen ? 'text-4xl' : ''}
-      />
+      <VendasPorMarketingChart isFullscreen={isFullscreen} />
     ),
   },
 ];
@@ -148,33 +115,17 @@ function GraphGrid({ graphs }: GraphGridProps) {
 
       {/* <div className="col-span-1 lg:col-span-2"></div> */}
 
-      {graphs.map((graph, index) => (
+      {graphs.map(graph => (
         <Card title={graph.title} key={graph.title}>
           {graph.render({ isFullscreen: false })}
         </Card>
       ))}
 
-      {/* <Card title="Total de Vendas por Categoria">
-        <CircularChart data={vendasPorCat} cx="45%" />
-      </Card> */}
-
       {/* <Card title="Total de Vendas por Marca">
         <CircularChart data={vendasPorCat} />
       </Card> */}
 
-      {/* <Card title="Total de Vendas por Forma de Pagamento">
-        <CircularChart data={vendasPorCat} />
-      </Card> */}
-
       {/* <Card title="Total de Vendas por Bairro">
-        <CircularChart data={vendasPorCat} />
-      </Card> */}
-
-      {/* <Card title="Total de Vendas por Tipo de Promoção">
-        <CircularChart data={vendasPorCat} />
-      </Card> */}
-
-      {/* <Card title="Total de Vendas por Campanha de Marketing">
         <CircularChart data={vendasPorCat} />
       </Card> */}
     </div>
