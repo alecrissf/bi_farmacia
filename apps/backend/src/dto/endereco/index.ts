@@ -1,8 +1,1 @@
-export interface AddEnderecoDto {
-  cidade: string;
-  bairro: string;
-  rua: string;
-  numero: number;
-  complemento: string;
-  clienteId: number;
-}
+export * from '../endereco/addEndereco.dto';

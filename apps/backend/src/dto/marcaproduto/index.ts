@@ -1,3 +1,1 @@
-export interface AddMarcaProdutoDto {
-  nome: string;
-}
+export * from '../marcaproduto/addMarcaProduto.dto';

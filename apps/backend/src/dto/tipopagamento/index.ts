@@ -1,3 +1,1 @@
-export interface AddTipoPagamentoDto {
-  descricao: string;
-}
+export * from '../tipopagamento/addTipoPagamento.dto';

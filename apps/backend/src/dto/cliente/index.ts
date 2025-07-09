@@ -1,4 +1,1 @@
-export interface AddClienteDto {
-  cpf: string;
-  nome: string;
-}
+export * from '../cliente/addCliente.dto';

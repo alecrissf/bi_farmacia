@@ -1,6 +1,1 @@
-export interface AddVendaDto {
-  dataVenda: Date;
-  clienteId: number;
-  tipoPagamentoId: number;
-  campanhaMarketingId?: number;
-}
+export * from '../venda/addVenda.dto';

@@ -1,7 +1,1 @@
-export interface AddLoteDto {
-  codigo: string;
-  produtoId: number;
-  dataValidade: Date;
-  dataRecebimento: Date;
-  qtdOriginal: number;
-}
+export * from '../lote/addLote.dto';

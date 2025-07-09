@@ -1,6 +1,1 @@
-export interface AddPedidoDto {
-  qtd: number;
-  vendaId: number;
-  produtoId: number;
-  promocaoId?: number;
-}
+export * from '../pedido/addPedido.dto';
