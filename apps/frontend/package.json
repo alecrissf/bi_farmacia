@@ -11,13 +11,17 @@
     "start": "NODE_ENV=production bun src/index.tsx"
   },
   "dependencies": {
+    "bun-plugin-tailwind": "^0.0.15",
     "react": "^19",
     "react-dom": "^19",
-    "recharts": "^3.0.2"
+    "react-icons": "^5.5.0",
+    "recharts": "^3.0.2",
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/bun": "latest"
+    "prettier-plugin-tailwindcss": "^0.6.13"
   }
 }

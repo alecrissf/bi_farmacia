@@ -1,5 +1,5 @@
 import { renderFrontend } from '@/utils/renderFrontend';
-import '../reset.css';
+import './index.css';
 import { BiApp } from './BiApp';
 
 renderFrontend(<BiApp />);
