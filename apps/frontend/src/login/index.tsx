@@ -1,5 +1,5 @@
 import { renderFrontend } from '@/utils/renderFrontend';
 import './index.css';
-import { BiApp } from './BiApp';
+import { LoginApp } from './LoginApp';
 
-renderFrontend(<BiApp />);
+renderFrontend(<LoginApp />);
