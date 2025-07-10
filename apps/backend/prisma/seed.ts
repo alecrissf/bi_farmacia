@@ -42,7 +42,7 @@ async function main() {
   const products = await prisma.produto.createManyAndReturn({
     data: [
       {
-        nome: 'Corus Losartana Potássica 50mg 30 comprimidos',
+        nome: 'Losartana Potássica 50mg 30 comprimidos',
         codBarras: '7896181920410',
         preco: 7.25,
         qtdEstoque: 800,
@@ -50,7 +50,7 @@ async function main() {
         marcaId: marcaCorus.id,
       },
       {
-        nome: 'Maxalgina Dipirona Sódica 500mg/ml Solução Gotas 20ml',
+        nome: 'Dipirona Sódica 500mg/ml Solução Gotas 20ml',
         codBarras: '7898133131011',
         preco: 4.99,
         qtdEstoque: 730,
@@ -58,7 +58,7 @@ async function main() {
         marcaId: marcaMaxalgina.id,
       },
       {
-        nome: 'Hidroclorotiazida 25mg 30 comprimidos Medley Genérico',
+        nome: 'Hidroclorotiazida 25mg 30 comprimidos',
         codBarras: '7891058002657',
         preco: 5.92,
         qtdEstoque: 700,
@@ -66,7 +66,7 @@ async function main() {
         marcaId: marcaMedley.id,
       },
       {
-        nome: 'Nimesulida 50mg/ml Gotas 15ml Neo Química Genérico',
+        nome: 'Nimesulida 50mg/ml Gotas 15ml',
         codBarras: '7896714206080',
         preco: 19.89,
         qtdEstoque: 300,
@@ -74,7 +74,7 @@ async function main() {
         marcaId: marcaNeoQuimica.id,
       },
       {
-        nome: 'Tadalafila 20mg 1 comprimido Neo Química Genérico',
+        nome: 'Tadalafila 20mg 1 comprimido',
         codBarras: '7896714255934',
         preco: 7.99,
         qtdEstoque: 300,
@@ -82,7 +82,7 @@ async function main() {
         marcaId: marcaNeoQuimica.id,
       },
       {
-        nome: 'Simeticona 125mg 10 cápsulas Medley Genérico',
+        nome: 'Simeticona 125mg 10 cápsulas',
         codBarras: '7896422520669',
         preco: 7.26,
         qtdEstoque: 600,
@@ -90,7 +90,7 @@ async function main() {
         marcaId: marcaMedley.id,
       },
       {
-        nome: 'Maleato de Enalapril 20mg 30 Comprimidos EMS Genérico',
+        nome: 'Maleato de Enalapril 20mg 30 Comprimidos',
         codBarras: '7896004700540',
         preco: 12.06,
         qtdEstoque: 500,
@@ -98,7 +98,7 @@ async function main() {
         marcaId: marcaEMS.id,
       },
       {
-        nome: 'Citrato de Sildenafila 50mg 2 Comprimidos Neo Química Genérico',
+        nome: 'Citrato de Sildenafila 50mg 2 Comprimidos',
         codBarras: '7896714226699',
         preco: 9.19,
         qtdEstoque: 400,
@@ -106,7 +106,7 @@ async function main() {
         marcaId: marcaNeoQuimica.id,
       },
       {
-        nome: 'Atenolol 25mg 30 comprimidos Medley Genérico',
+        nome: 'Atenolol 25mg 30 comprimidos',
         codBarras: '7896422506342',
         preco: 4.36,
         qtdEstoque: 800,
@@ -114,7 +114,7 @@ async function main() {
         marcaId: marcaMedley.id,
       },
       {
-        nome: 'Sinvastatina 20mg 30 Comprimidos Cimed Genérico',
+        nome: 'Sinvastatina 20mg 30 Comprimidos',
         codBarras: '7896523215235',
         preco: 9.25,
         qtdEstoque: 720,
@@ -500,7 +500,7 @@ async function main() {
     });
 
   // Promocao
-  const promocoes = Promise.all([
+  const promocoes = await Promise.all([
     prisma.promocao.create({
       data: {
         nome: '10% OFF em Genéricos',
@@ -738,6 +738,8 @@ async function main() {
           pedidos.push({
             produtoId: products[Math.floor(Math.random() * products.length)].id,
             qtd: Math.ceil(Math.random() * 10),
+            promocaoId:
+              promocoes[Math.floor(Math.random() * promocoes.length)].id,
           });
         }
 

@@ -7,6 +7,16 @@ class VendaRepository {
       orderBy: {
         id: 'desc',
       },
+      include: {
+        tipoPagamento: true,
+        campanhaMarketing: true,
+        pedidos: {
+          include: {
+            produto: { include: { categoria: true } },
+            promocao: true,
+          },
+        },
+      },
     });
   }
 
