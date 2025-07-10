@@ -1,30 +1,30 @@
-import prisma from "../database/prisma";
-import { AddTipoPagamentoDto } from "../dto/tipopagamento";
+import { prisma } from '../lib/db';
+import { AddTipoPagamentoDto } from '../dto/tipopagamento';
 
 class TipopagamentoRepository {
   async findAll() {
-    return await prisma.tipo_pagamento.findMany({
+    return await prisma.tipoPagamento.findMany({
       orderBy: {
-        descricao: 'desc'
-      }
+        descricao: 'desc',
+      },
     });
   }
 
   async add(data: AddTipoPagamentoDto) {
-    return await prisma.tipo_pagamento.create({ data });
+    return await prisma.tipoPagamento.create({ data });
   }
 
-  async findByDescricao(descricao: string) {
-    return await prisma.tipo_pagamento.findUnique({
-      where: { descricao }
+  async findByPayment(id: number) {
+    return await prisma.tipoPagamento.findUnique({
+      where: { id },
     });
   }
 
-  async removeByDescricao(descricao: string) {
-    return await prisma.tipo_pagamento.delete({
-      where: { descricao }
+  async removeByPayment(id: number) {
+    return await prisma.tipoPagamento.delete({
+      where: { id },
     });
   }
 }
 
-export default new TipopagamentoRepository;
+export default new TipopagamentoRepository();

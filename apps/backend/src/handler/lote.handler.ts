@@ -1,20 +1,20 @@
-import { addLote } from "../dto/lote";
-import Repository from "../repositories/lote.repository";
+import { AddLoteDto } from '../dto/lote';
+import Repository from '../repositories/lote.repository';
 
 export async function findAll() {
   const result = await Repository.findAll();
   return result;
 }
 
-export async function add(data: addLote) {
+export async function add(data: AddLoteDto) {
   await Repository.add(data);
 }
 
-export async function findByName(name: string) {
-  const result = await Repository.findByName(name);
+export async function findByCodigo(id: number) {
+  const result = await Repository.findByCodigo(id);
   return result;
 }
 
-export async function removeByName(name: string) {
-  await Repository.removeByName(name);
+export async function removeByCodigo(id: number) {
+  await Repository.removeByCodigo(id);
 }

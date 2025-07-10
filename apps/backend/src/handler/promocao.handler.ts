@@ -1,12 +1,12 @@
-import { addPromocao } from "../dto/promocao";
-import Repository from "../repositories/promocao.repository";
+import { AddPromocaoDto } from '../dto/promocao';
+import Repository from '../repositories/promocao.repository';
 
 export async function findAll() {
   const result = await Repository.findAll();
   return result;
 }
 
-export async function add(data: addPromocao) {
+export async function add(data: AddPromocaoDto) {
   await Repository.add(data);
 }
 

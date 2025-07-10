@@ -1,12 +1,12 @@
-import { addMarcaProduto } from "../dto/marcaproduto";
-import Repository from "../repositories/marcaproduto.repository";
+import { AddMarcaProdutoDto } from '../dto/marcaproduto';
+import Repository from '../repositories/marcaproduto.repository';
 
 export async function findAll() {
   const result = await Repository.findAll();
   return result;
 }
 
-export async function add(data: addMarcaProduto) {
+export async function add(data: AddMarcaProdutoDto) {
   await Repository.add(data);
 }
 

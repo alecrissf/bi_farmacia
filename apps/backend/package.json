@@ -6,6 +6,8 @@
     "generate:prisma": "bunx prisma generate",
     "generate:auth": "bunx @better-auth/cli generate",
     "migrate:dev": "bunx prisma migrate dev",
+    "prisma:reset": "bunx prisma migrate reset --force",
+    "prisma:recreate-db": "rm -rf ./prisma/migrations && bunx prisma migrate dev --name init",
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
@@ -25,5 +27,8 @@
     "prisma": "^6.11.1",
     "prisma-erd-generator": "^2.0.4"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "prisma": {
+    "seed": "bun run ./prisma/seed.ts"
+  }
 }

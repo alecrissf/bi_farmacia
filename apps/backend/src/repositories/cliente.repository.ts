@@ -1,12 +1,12 @@
-import prisma from "../database/prisma";
-import { AddClienteDto } from "../dto/cliente";
+import { prisma } from '../lib/db';
+import { AddClienteDto } from '../dto/cliente';
 
 class ClienteRepository {
   async findAll() {
     return await prisma.cliente.findMany({
       orderBy: {
-        cpf: 'desc'
-      }
+        cpf: 'desc',
+      },
     });
   }
 
@@ -16,15 +16,15 @@ class ClienteRepository {
 
   async findByCpf(cpf: string) {
     return await prisma.cliente.findUnique({
-      where: { cpf }
+      where: { cpf },
     });
   }
 
   async removeByCpf(cpf: string) {
     return await prisma.cliente.delete({
-      where: { cpf }
+      where: { cpf },
     });
   }
 }
 
-export default new ClienteRepository;
+export default new ClienteRepository();

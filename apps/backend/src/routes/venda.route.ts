@@ -1,8 +1,36 @@
-import { Elysia } from 'elysia';
-import * as handler from '../handler/venda.handler';
+import { Elysia, t } from 'elysia';
+import { findAll, add, findById, removeById } from '../handler/venda.handler';
+import { prisma } from '../lib/db';
 
-export const vendaRoutes = new Elysia({ prefix: '/venda' })
-  .get('/', async () => await handler.findAll())
-  .post('/', async ({ body }) => await handler.add(body))
-  .get('/:name', async ({ params }) => await handler.findByName(params.name))
-  .delete('/:name', async ({ params }) => await handler.removeByName(params.name));
+export const vendasRoutes = new Elysia()
+  .get('/vendas', async () => {
+    const pedidos = await findAll();
+    return pedidos;
+  })
+  .get('/vendas/:id', async ({ params }) => {
+    const pedido = await findById(parseInt(params.id));
+    return pedido;
+  })
+  .delete('/vendas/:id', async ({ params }) => {
+    await removeById(parseInt(params.id));
+    return {
+      response: 'success removed',
+    };
+  })
+  .post(
+    '/vendas',
+    async ({ body }) => {
+      await add(body);
+      return {
+        response: 'success added',
+      };
+    },
+    {
+      body: t.Object({
+        dataVenda: t.Date(),
+        clienteId: t.Number(),
+        tipoPagamentoId: t.Number(),
+        campanhaMarketingId: t.Number(),
+      }),
+    },
+  );

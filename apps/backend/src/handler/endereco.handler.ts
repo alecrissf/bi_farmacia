@@ -1,5 +1,5 @@
-import { AddEnderecoDto } from "../dto/endereco";
-import Repository from "../repositories/endereco.repository";
+import { AddEnderecoDto } from '../dto/endereco';
+import Repository from '../repositories/endereco.repository';
 
 export async function findAll() {
   const result = await Repository.findAll();
@@ -10,11 +10,11 @@ export async function add(data: AddEnderecoDto) {
   await Repository.add(data);
 }
 
-export async function findByName(name: string) {
-  const result = await Repository.findByName(name);
+export async function findById(id: number) {
+  const result = await Repository.findById(id);
   return result;
 }
 
-export async function removeByName(name: string) {
-  await Repository.removeByName(name);
+export async function removeById(id: number) {
+  await Repository.removeById(id);
 }

@@ -1,12 +1,12 @@
-import prisma from "../database/prisma";
-import { AddEnderecoDto } from "../dto/endereco";
+import { prisma } from '../lib/db';
+import { AddEnderecoDto } from '../dto/endereco';
 
 class EnderecoRepository {
   async findAll() {
     return await prisma.endereco.findMany({
       orderBy: {
-        id: 'desc'
-      }
+        id: 'desc',
+      },
     });
   }
 
@@ -16,15 +16,15 @@ class EnderecoRepository {
 
   async findById(id: number) {
     return await prisma.endereco.findUnique({
-      where: { id }
+      where: { id },
     });
   }
 
   async removeById(id: number) {
     return await prisma.endereco.delete({
-      where: { id }
+      where: { id },
     });
   }
 }
 
-export default new EnderecoRepository;
+export default new EnderecoRepository();

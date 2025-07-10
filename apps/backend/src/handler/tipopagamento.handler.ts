@@ -1,20 +1,20 @@
-import { addTipoPagamento } from "../dto/tipopagamento";
-import Repository from "../repositories/tipopagamento.repository";
+import { AddTipoPagamentoDto } from '../dto/tipopagamento';
+import Repository from '../repositories/tipopagamento.repository';
 
 export async function findAll() {
   const result = await Repository.findAll();
   return result;
 }
 
-export async function add(data: addTipoPagamento) {
+export async function add(data: AddTipoPagamentoDto) {
   await Repository.add(data);
 }
 
-export async function findByName(name: string) {
-  const result = await Repository.findByName(name);
+export async function findByPayment(id: number) {
+  const result = await Repository.findByPayment(id);
   return result;
 }
 
-export async function removeByName(name: string) {
-  await Repository.removeByName(name);
+export async function removeByPayment(id: number) {
+  await Repository.removeByPayment(id);
 }
