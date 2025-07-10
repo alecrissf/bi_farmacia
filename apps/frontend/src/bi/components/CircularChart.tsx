@@ -36,7 +36,7 @@ export function CircularChart({
           legendType="circle"
           isAnimationActive={false}
         >
-          <Legend verticalAlign="middle" layout="vertical" />
+          <Legend verticalAlign="bottom" layout="vertical" />
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} />
           ))}

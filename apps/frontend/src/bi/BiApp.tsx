@@ -1,69 +1,54 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Card } from './components/Card';
-import { FiToggleLeft, FiToggleRight } from 'react-icons/fi';
-import { TopProductsChart } from './components/graphs/TopProductsChart';
-import { VendasPorCatChart } from './components/graphs/VendasPorCatChart';
-import { VendasPorPagChart } from './components/graphs/VendasPorPagChart';
-import { VendasPorPromChart } from './components/graphs/VendasPorPromChart';
-import { VendasPorMarketingChart } from './components/graphs/VendasPorMarketingChart';
-
-const graphs: GraphCardData[] = [
-  {
-    title: 'Top 5 Produtos Mais Vendidos',
-    render: ({ isFullscreen }) => (
-      <TopProductsChart isFullscreen={isFullscreen} />
-    ),
-  },
-  {
-    title: 'Total de Vendas por Categoria',
-    render: ({ isFullscreen }) => (
-      <VendasPorCatChart isFullscreen={isFullscreen} />
-    ),
-  },
-  {
-    title: 'Total de Vendas por Forma de Pagamento',
-    render: ({ isFullscreen }) => (
-      <VendasPorPagChart isFullscreen={isFullscreen} />
-    ),
-  },
-  {
-    title: 'Total de Vendas por Tipo de Promoção',
-    render: ({ isFullscreen }) => (
-      <VendasPorPromChart isFullscreen={isFullscreen} />
-    ),
-  },
-  {
-    title: 'Total de Vendas por Campanha de Marketing',
-    render: ({ isFullscreen }) => (
-      <VendasPorMarketingChart isFullscreen={isFullscreen} />
-    ),
-  },
-];
+import {
+  FiToggleLeft,
+  FiToggleRight,
+  FiPause,
+  FiPlay,
+  FiFastForward,
+} from 'react-icons/fi';
+import { defaultChartServerData, getChartServerData } from '@/utils/data';
+import { ResponsiveContainer, BarChart, XAxis, Bar, LabelList } from 'recharts';
+import { CircularChart } from './components/CircularChart';
 
 export function BiApp() {
+  const [weirdFix, setWeirdFix] = useState(true);
+
   const [isSlide, setIsSlide] = useState(false);
-  const [slideIndex, setSlideIndex] = useState(0);
+  const [slideState, setSlideState] = useState(SlideState.Normal);
+  const [chartData, setChartData] = useState(defaultChartServerData);
+
+  const {
+    totalVendas,
+    qtdVendas,
+    topProducts,
+    vendasPorCat,
+    vendasPorMarketing,
+    vendasPorPag,
+    vendasPorProm,
+  } = chartData;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (isSlide) {
-        setSlideIndex(old => (old + 1) % graphs.length);
-      }
-    }, 3000);
+    getChartServerData()
+      .then(val => {
+        setChartData(val);
+        setWeirdFix(old => !old);
+      })
+      .catch(e => console.error(e));
+  }, []);
 
-    return () => clearInterval(interval);
+  useEffect(() => {
+    setSlideState(SlideState.Normal);
   }, [isSlide]);
 
   return (
     <div className="flex min-h-dvh w-full flex-col items-center justify-start gap-4 px-10 py-5 text-white">
       <div className="flex w-full flex-row items-center gap-3 rounded-2xl bg-zinc-800 p-5">
         <h4>Slide:</h4>
+
         <button
           className="flex cursor-pointer items-center justify-center"
-          onClick={() => {
-            setIsSlide(old => !old);
-            setSlideIndex(0);
-          }}
+          onClick={() => setIsSlide(old => !old)}
         >
           {isSlide ? (
             <FiToggleRight
@@ -74,52 +59,146 @@ export function BiApp() {
             <FiToggleLeft size={30} className="hover:stroke-sky-500" />
           )}
         </button>
+
+        <h4>Controles do Slide:</h4>
+
+        <button
+          className="flex cursor-pointer items-center justify-center"
+          onClick={() => setSlideState(SlideState.Paused)}
+        >
+          <FiPause
+            size={20}
+            className={
+              'hover:stroke-sky-500' +
+              (slideState == SlideState.Paused ? ' stroke-sky-600' : '')
+            }
+          />
+        </button>
+
+        <button
+          className="flex cursor-pointer items-center justify-center"
+          onClick={() => setSlideState(SlideState.Normal)}
+        >
+          <FiPlay
+            size={20}
+            className={
+              'hover:stroke-sky-500' +
+              (slideState == SlideState.Normal ? ' stroke-sky-600' : '')
+            }
+          />
+        </button>
+
+        <button
+          className="flex cursor-pointer items-center justify-center"
+          onClick={() => setSlideState(SlideState.Fast)}
+        >
+          <FiFastForward
+            size={20}
+            className={
+              'hover:stroke-sky-500' +
+              (slideState == SlideState.Fast ? ' stroke-sky-600' : '')
+            }
+          />
+        </button>
       </div>
 
-      {isSlide ? (
-        <div className="flex-colitems-center flex h-[80vh] w-full flex-col justify-center gap-3 rounded-2xl bg-zinc-800 p-10">
-          <h3 className="text-center text-4xl">{graphs[slideIndex].title}</h3>
-          <div className="h-full w-11/12">
-            {graphs[slideIndex].render({ isFullscreen: true })}
+      <GraphGrid isSlide={isSlide} slideState={slideState}>
+        <div className="grid grid-rows-2 gap-3">
+          <div className="flex flex-col justify-center gap-4 rounded-2xl bg-zinc-800 p-5">
+            <h3 className="text-lg">Total de Vendas</h3>
+            <b className="text-3xl">R$ {totalVendas}</b>
+          </div>
+          <div className="flex flex-col justify-center gap-4 rounded-2xl bg-zinc-800 p-5">
+            <h3 className="text-lg">Quantidade de Vendas</h3>
+            <b className="text-3xl">{qtdVendas}</b>
           </div>
         </div>
-      ) : (
-        <GraphGrid graphs={graphs} />
-      )}
+
+        <Card title="Top 5 Produtos Mais Vendidos" isFullSize={isSlide}>
+          <ResponsiveContainer className={isSlide ? 'text-3xl' : 'text-sm'}>
+            <BarChart
+              data={topProducts}
+              margin={{ top: 90, left: 20, right: 20 }}
+            >
+              <XAxis dataKey="value" />
+              <Bar dataKey="value" isAnimationActive={false}>
+                <LabelList dataKey="name" position="top" />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+
+        <Card title="Total de Vendas por Categoria" isFullSize={isSlide}>
+          <CircularChart data={vendasPorCat} />
+        </Card>
+
+        <Card
+          title="Total de Vendas por Forma de Pagamento"
+          isFullSize={isSlide}
+        >
+          <CircularChart data={vendasPorPag} />
+        </Card>
+
+        <Card title="Total de Vendas por Tipo de Promoção" isFullSize={isSlide}>
+          <CircularChart data={vendasPorProm} />
+        </Card>
+
+        <Card
+          title="Total de Vendas por Campanha de Marketing"
+          isFullSize={isSlide}
+        >
+          <CircularChart data={vendasPorMarketing} />
+        </Card>
+      </GraphGrid>
     </div>
   );
 }
 
-interface GraphCardData {
-  title: string;
-  render: (props: { isFullscreen: boolean }) => ReactNode;
+enum SlideState {
+  Paused,
+  Normal,
+  Fast,
 }
 
 interface GraphGridProps {
-  graphs: GraphCardData[];
+  isSlide: boolean;
+  slideState: SlideState;
+  children: ReactNode[];
 }
 
-function GraphGrid({ graphs }: GraphGridProps) {
+function GraphGrid({ isSlide, slideState, children }: GraphGridProps) {
+  if (isSlide) {
+    const [slideIndex, setSlideIndex] = useState(0);
+
+    useEffect(() => {
+      let interval = null;
+
+      if (isSlide && slideState != SlideState.Paused) {
+        interval = setInterval(
+          () => {
+            setSlideIndex(old => (old + 1) % children.length);
+          },
+          slideState == SlideState.Normal ? 3000 : 1000,
+        );
+      }
+
+      return () => {
+        if (interval) {
+          clearInterval(interval);
+        }
+      };
+    }, [isSlide, slideState]);
+
+    return (
+      <div className="flex h-[80vh] w-full flex-col items-center justify-center gap-3 rounded-2xl bg-zinc-800 p-10">
+        {children[slideIndex]}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-      <div className="grid grid-rows-2 gap-3">
-        <div className="flex flex-col justify-center gap-4 rounded-2xl bg-zinc-800 p-5">
-          <h3 className="text-lg">Total de Vendas</h3>
-          <b className="text-3xl">R$ 100 K</b>
-        </div>
-        <div className="flex flex-col justify-center gap-4 rounded-2xl bg-zinc-800 p-5">
-          <h3 className="text-lg">Quantidade de Vendas</h3>
-          <b className="text-3xl">10 K</b>
-        </div>
-      </div>
-
-      {/* <div className="col-span-1 lg:col-span-2"></div> */}
-
-      {graphs.map(graph => (
-        <Card title={graph.title} key={graph.title}>
-          {graph.render({ isFullscreen: false })}
-        </Card>
-      ))}
+      {children}
 
       {/* <Card title="Total de Vendas por Marca">
         <CircularChart data={vendasPorCat} />
