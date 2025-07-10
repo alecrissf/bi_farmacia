@@ -10,11 +10,11 @@ export async function add(data: AddTipoPagamentoDto) {
   await Repository.add(data);
 }
 
-export async function findByDescricao(desc: string) {
-  const result = await Repository.findByDescricao(desc);
+export async function findByPayment(id: number) {
+  const result = await Repository.findByPayment(id);
   return result;
 }
 
-export async function removeByDescricao(desc: string) {
-  await Repository.removeByDescricao(desc);
+export async function removeByPayment(id: number) {
+  await Repository.removeByPayment(id);
 }

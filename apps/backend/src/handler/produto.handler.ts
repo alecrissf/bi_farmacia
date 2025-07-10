@@ -10,11 +10,11 @@ export async function add(data: AddProdutoDto) {
   await Repository.add(data);
 }
 
-export async function findByCodBarras(cod: string) {
-  const result = await Repository.findByCodBarras(cod);
+export async function findByCodBarras(id: string) {
+  const result = await Repository.findByCodBarras(id);
   return result;
 }
 
-export async function removeByCodBarras(cod: string) {
-  await Repository.removeByCodBarras(cod);
+export async function removeByCodBarras(id: string) {
+  await Repository.removeByCodBarras(id);
 }

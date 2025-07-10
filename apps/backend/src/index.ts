@@ -1,16 +1,16 @@
 import cors from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
-import { Context, Elysia } from 'elysia';
+import { Elysia } from 'elysia';
 import { auth, OpenAPI } from './lib/auth';
 
 import { categoriaRoutes } from './routes/categoria_produto.route';
-import { marcaprodutoRoutes } from './routes/marcaproduto.route';
+import { marcasProdutosRoutes } from './routes/marcaproduto.route';
 import { produtoRoutes } from './routes/produto.route';
 import { loteRoutes } from './routes/lote.route';
 import { clienteRoutes } from './routes/cliente.route';
 import { enderecoRoutes } from './routes/endereco.route';
-import { tipopagamentoRoutes } from './routes/tipopagamento.route';
-import { vendaRoutes } from './routes/venda.route';
+import { tipoPagamentoRoutes } from './routes/tipopagamento.route';
+import { vendasRoutes } from './routes/venda.route';
 import { pedidoRoutes } from './routes/pedido.route';
 import { promocaoRoutes } from './routes/promocao.route';
 import { campanhamarketingRoutes } from './routes/campanhamarketing.route';
@@ -39,29 +39,21 @@ const app = new Elysia()
       },
     }),
   )
-  .use(
-    cors({
-      // origin: 'http://localhost:3000',
-      // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      // credentials: true,
-      // allowedHeaders: ['Content-Type', 'Authorization'],
-    }),
-  )
+  .use(cors())
   .use(betterAuth)
+  .get('/auth', () => 'Hello Elysia', { auth: false })
   .use(categoriaRoutes)
-  .use(marcaprodutoRoutes)
+  .use(marcasProdutosRoutes)
   .use(produtoRoutes)
   .use(loteRoutes)
   .use(clienteRoutes)
   .use(enderecoRoutes)
-  .use(tipopagamentoRoutes)
-  .use(vendaRoutes)
+  .use(tipoPagamentoRoutes)
+  .use(vendasRoutes)
   .use(pedidoRoutes)
   .use(promocaoRoutes)
   .use(campanhamarketingRoutes)
   .listen(3000);
-
-export type App = typeof app;
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,

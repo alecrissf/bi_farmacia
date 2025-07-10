@@ -1,11 +1,40 @@
-import { Elysia } from 'elysia';
-import * as handler from '../handler/cliente.handler';
+import { Elysia, t } from 'elysia';
+import {
+  findAll,
+  add,
+  findByCpf,
+  removeByCpf,
+} from '../handler/cliente.handler';
 
-export const clienteRoutes = new Elysia({ prefix: '/cliente' })
-  .get('/', async () => await handler.findAll())
-  .post('/', async ({ body }) => await handler.add(body))
-  .get('/:name', async ({ params }) => await handler.findByCpf(params.name))
-  .delete(
-    '/:name',
-    async ({ params }) => await handler.removeByCpf(params.name),
-  );
+export const clienteRoutes = (app: Elysia) => {
+  app.get('/cliente', async () => {
+    const categoria = await findAll();
+    return categoria;
+  }),
+    app.get('/cliente/:name', async ({ params }) => {
+      const categoria = await findByCpf(params.name);
+      return categoria;
+    }),
+    app.delete('/cliente/:name', async ({ params }) => {
+      await removeByCpf(params.name);
+      return {
+        response: 'success removed',
+      };
+    }),
+    app.post(
+      '/cliente',
+      async ({ body }) => {
+        await add(body);
+        return {
+          response: 'success added',
+        };
+      },
+      {
+        body: t.Object({
+          cpf: t.String(),
+          nome: t.String(),
+        }),
+      },
+    );
+  return app;
+};

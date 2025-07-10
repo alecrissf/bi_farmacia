@@ -14,15 +14,15 @@ class TipopagamentoRepository {
     return await prisma.tipoPagamento.create({ data });
   }
 
-  async findByDescricao(descricao: string) {
+  async findByPayment(id: number) {
     return await prisma.tipoPagamento.findUnique({
-      where: { descricao },
+      where: { id },
     });
   }
 
-  async removeByDescricao(descricao: string) {
+  async removeByPayment(id: number) {
     return await prisma.tipoPagamento.delete({
-      where: { descricao },
+      where: { id },
     });
   }
 }
