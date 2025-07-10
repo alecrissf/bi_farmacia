@@ -32,15 +32,10 @@ const betterAuth = new Elysia({ name: 'better-auth' })
 
 const app = new Elysia()
     .use(
-        swagger({
-            documentation: {
-                components: await OpenAPI.components,
-                paths: await OpenAPI.getPaths(),
-            },
-        }),
+        swagger()
     )
     .use(cors())
-    .use(betterAuth)
+    //.use(betterAuth)
     .get('/auth', () => 'Hello Elysia', { auth: false })
     .use(categoriaRoutes)
     .use(marcasProdutosRoutes)
