@@ -1,12 +1,12 @@
-import prisma from "../database/prisma";
-import { AddLoteDto } from "../dto/lote";
+import { prisma } from '../lib/db';
+import { AddLoteDto } from '../dto/lote';
 
 class LoteRepository {
   async findAll() {
     return await prisma.lote.findMany({
       orderBy: {
-        codigo: 'desc'
-      }
+        codigo: 'desc',
+      },
     });
   }
 
@@ -16,15 +16,15 @@ class LoteRepository {
 
   async findByCodigo(codigo: string) {
     return await prisma.lote.findUnique({
-      where: { codigo }
+      where: { codigo },
     });
   }
 
   async removeByCodigo(codigo: string) {
     return await prisma.lote.delete({
-      where: { codigo }
+      where: { codigo },
     });
   }
 }
 
-export default new LoteRepository;
+export default new LoteRepository();

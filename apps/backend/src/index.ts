@@ -1,6 +1,6 @@
 import cors from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
-import { Elysia } from 'elysia';
+import { Context, Elysia } from 'elysia';
 import { auth, OpenAPI } from './lib/auth';
 
 import { categoriaRoutes } from './routes/categoria_produto.route';
@@ -39,7 +39,14 @@ const app = new Elysia()
       },
     }),
   )
-  .use(cors())
+  .use(
+    cors({
+      // origin: 'http://localhost:3000',
+      // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      // credentials: true,
+      // allowedHeaders: ['Content-Type', 'Authorization'],
+    }),
+  )
   .use(betterAuth)
   .use(categoriaRoutes)
   .use(marcaprodutoRoutes)

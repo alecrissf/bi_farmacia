@@ -1,32 +1,32 @@
-import prisma from "../database/prisma";
-import {addCategoria} from "../dto/categoriaproduto"
+import { prisma } from '../lib/db';
+import { addCategoria } from '../dto/categoriaproduto';
 
 class CategoryRepository {
   async findAll() {
-    return await prisma.categoria_produto.findMany({
+    return await prisma.categoriaProduto.findMany({
       orderBy: {
-        nome: 'desc'
-      }     
+        nome: 'desc',
+      },
     });
   }
   async add(data: addCategoria) {
-    return await prisma.categoria_produto.create({data});
+    return await prisma.categoriaProduto.create({ data });
   }
   async findByName(nome: string) {
-    return await prisma.categoria_produto.findUnique({
+    return await prisma.categoriaProduto.findUnique({
       where: {
         nome,
-      }
+      },
     });
   }
 
   async removeByName(nome: string) {
-    return await prisma.categoria_produto.delete({
+    return await prisma.categoriaProduto.delete({
       where: {
         nome,
-      }
+      },
     });
   }
 }
 
-export default new CategoryRepository;
+export default new CategoryRepository();

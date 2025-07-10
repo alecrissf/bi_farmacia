@@ -1,12 +1,12 @@
-import prisma from "../database/prisma";
-import { AddProdutoDto } from "../dto/produto";
+import { prisma } from '../lib/db';
+import { AddProdutoDto } from '../dto/produto';
 
 class ProdutoRepository {
   async findAll() {
     return await prisma.produto.findMany({
       orderBy: {
-        codBarras: 'desc'
-      }
+        codBarras: 'desc',
+      },
     });
   }
 
@@ -16,15 +16,15 @@ class ProdutoRepository {
 
   async findByCodBarras(codBarras: string) {
     return await prisma.produto.findUnique({
-      where: { codBarras }
+      where: { codBarras },
     });
   }
 
   async removeByCodBarras(codBarras: string) {
     return await prisma.produto.delete({
-      where: { codBarras }
+      where: { codBarras },
     });
   }
 }
 
-export default new ProdutoRepository;
+export default new ProdutoRepository();

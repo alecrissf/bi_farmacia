@@ -1,20 +1,20 @@
-import { addProduto } from "../dto/produto";
-import Repository from "../repositories/produto.repository";
+import { AddProdutoDto } from '../dto/produto';
+import Repository from '../repositories/produto.repository';
 
 export async function findAll() {
   const result = await Repository.findAll();
   return result;
 }
 
-export async function add(data: addProduto) {
+export async function add(data: AddProdutoDto) {
   await Repository.add(data);
 }
 
-export async function findByName(name: string) {
-  const result = await Repository.findByName(name);
+export async function findByCodBarras(cod: string) {
+  const result = await Repository.findByCodBarras(cod);
   return result;
 }
 
-export async function removeByName(name: string) {
-  await Repository.removeByName(name);
+export async function removeByCodBarras(cod: string) {
+  await Repository.removeByCodBarras(cod);
 }

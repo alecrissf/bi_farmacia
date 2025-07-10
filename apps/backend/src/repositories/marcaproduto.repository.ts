@@ -1,30 +1,30 @@
-import prisma from "../database/prisma";
-import { AddMarcaProdutoDto } from "../dto/marcaproduto";
+import { prisma } from '../lib/db';
+import { AddMarcaProdutoDto } from '../dto/marcaproduto';
 
 class MarcaprodutoRepository {
   async findAll() {
-    return await prisma.marca_produto.findMany({
+    return await prisma.marcaProduto.findMany({
       orderBy: {
-        nome: 'desc'
-      }
+        nome: 'desc',
+      },
     });
   }
 
   async add(data: AddMarcaProdutoDto) {
-    return await prisma.marca_produto.create({ data });
+    return await prisma.marcaProduto.create({ data });
   }
 
-  async findByNome(nome: string) {
-    return await prisma.marca_produto.findUnique({
-      where: { nome }
+  async findByName(nome: string) {
+    return await prisma.marcaProduto.findUnique({
+      where: { nome },
     });
   }
 
-  async removeByNome(nome: string) {
-    return await prisma.marca_produto.delete({
-      where: { nome }
+  async removeByName(nome: string) {
+    return await prisma.marcaProduto.delete({
+      where: { nome },
     });
   }
 }
 
-export default new MarcaprodutoRepository;
+export default new MarcaprodutoRepository();

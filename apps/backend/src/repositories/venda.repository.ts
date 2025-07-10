@@ -1,12 +1,12 @@
-import prisma from "../database/prisma";
-import { AddVendaDto } from "../dto/venda";
+import { prisma } from '../lib/db';
+import { AddVendaDto } from '../dto/venda';
 
 class VendaRepository {
   async findAll() {
     return await prisma.venda.findMany({
       orderBy: {
-        id: 'desc'
-      }
+        id: 'desc',
+      },
     });
   }
 
@@ -16,15 +16,15 @@ class VendaRepository {
 
   async findById(id: number) {
     return await prisma.venda.findUnique({
-      where: { id }
+      where: { id },
     });
   }
 
   async removeById(id: number) {
     return await prisma.venda.delete({
-      where: { id }
+      where: { id },
     });
   }
 }
 
-export default new VendaRepository;
+export default new VendaRepository();

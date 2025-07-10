@@ -1,30 +1,30 @@
-import prisma from "../database/prisma";
-import { AddCampanhaMarketingDto } from "../dto/campanhamarketing";
+import { prisma } from '../lib/db';
+import { AddCampanhaMarketingDto } from '../dto/campanhamarketing';
 
 class CampanhamarketingRepository {
   async findAll() {
-    return await prisma.campanha_marketing.findMany({
+    return await prisma.campanhaMarketing.findMany({
       orderBy: {
-        nome: 'desc'
-      }
+        nome: 'desc',
+      },
     });
   }
 
   async add(data: AddCampanhaMarketingDto) {
-    return await prisma.campanha_marketing.create({ data });
+    return await prisma.campanhaMarketing.create({ data });
   }
 
-  async findByNome(nome: string) {
-    return await prisma.campanha_marketing.findUnique({
-      where: { nome }
+  async findByName(nome: string) {
+    return await prisma.campanhaMarketing.findUnique({
+      where: { nome },
     });
   }
 
-  async removeByNome(nome: string) {
-    return await prisma.campanha_marketing.delete({
-      where: { nome }
+  async removeByName(nome: string) {
+    return await prisma.campanhaMarketing.delete({
+      where: { nome },
     });
   }
 }
 
-export default new CampanhamarketingRepository;
+export default new CampanhamarketingRepository();

@@ -1,5 +1,5 @@
 export interface addCategoria {
-  nome : string,    
-  produtos : string[],
-  promocoes: string[],
+  nome: string;
+  // produtos : string[],
+  // promocoes: string[],
 }

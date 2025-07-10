@@ -95,6 +95,7 @@ model CategoriaProduto {
   produtos  Produto[]
   promocoes Promocao[]
 
+  @@unique([nome])
   @@map("categoria_produto")
 }
 
@@ -104,6 +105,7 @@ model MarcaProduto {
   produtos  Produto[]
   promocoes Promocao[]
 
+  @@unique([nome])
   @@map("marca_produto")
 }
 
@@ -167,6 +169,7 @@ model TipoPagamento {
   descricao String  @db.VarChar(50)
   vendas    Venda[]
 
+  @@unique([descricao])
   @@map("tipo_pagamento")
 }
 
@@ -214,6 +217,7 @@ model Promocao {
   categoriasAplicaveis CategoriaProduto[]
   marcasAplicaveis     MarcaProduto[]
 
+  @@unique([nome])
   @@map("promocao")
 }
 
@@ -225,5 +229,6 @@ model CampanhaMarketing {
   tipo       String   @db.VarChar(50)
   vendas     Venda[]
 
+  @@unique([nome])
   @@map("campanha_marketing")
 }
