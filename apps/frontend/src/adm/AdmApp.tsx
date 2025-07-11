@@ -6,11 +6,13 @@ import {
   FiPlusSquare,
   FiXSquare,
   FiRefreshCw,
+  FiPower,
 } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
 import { Inspect } from './components/Inspect';
 import { AddRow } from './components/AddRow';
 import { EditRow } from './components/EditRow';
+import { signOut, useSession } from '@/lib/auth-client';
 
 const tables = [
   {
@@ -134,6 +136,10 @@ const tables = [
   },
 ];
 
+const userTable = [];
+
+const accountTable = [];
+
 enum PanelState {
   None,
   Inspecting,
@@ -142,9 +148,11 @@ enum PanelState {
 }
 
 export function AdmApp() {
+  const { data: session, isPending, error, refetch } = useSession();
+
   const [updateHack, setUpdateHack] = useState(0);
 
-  const [tableIndex, setTableIndex] = useState<number>();
+  const [currentTable, setCurrentTable] = useState<(typeof tables)[0]>();
   const [panelState, setPanelState] = useState({
     id: undefined as number | undefined,
     state: PanelState.None,
@@ -152,31 +160,56 @@ export function AdmApp() {
 
   const data = useAsyncMemo(
     async () =>
-      tableIndex !== undefined
-        ? tables[tableIndex].get().then(({ data }) => data)
+      currentTable !== undefined
+        ? currentTable.get().then(({ data }) => data)
         : null,
-    [tableIndex, updateHack],
+    [currentTable, updateHack],
   );
 
   const currentInspection = useAsyncMemo(
     async () =>
       panelState.state !== PanelState.None &&
       panelState.id !== undefined &&
-      tableIndex !== undefined
-        ? tables[tableIndex].inspect(panelState.id).then(({ data }) => data)
+      currentTable !== undefined
+        ? currentTable.inspect(panelState.id).then(({ data }) => data)
         : null,
-    [panelState, tableIndex],
+    [panelState, currentTable],
   );
 
   useEffect(() => {
     setPanelState({ id: undefined, state: PanelState.None });
-  }, [tableIndex]);
+  }, [currentTable]);
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      location.pathname = '/login';
+    }
+  }, [isPending, session]);
+
+  if (!isPending && !session) {
+    return (
+      <div className="grid h-dvh max-h-dvh w-full grid-cols-[288px_minmax(900px,_1fr)] gap-6 p-10 text-white">
+        {error?.message}
+      </div>
+    );
+  }
 
   return (
     <div className="grid h-dvh max-h-dvh w-full grid-cols-[288px_minmax(900px,_1fr)] gap-6 p-10 text-white">
-      <div className="flex h-full max-h-[calc(100dvh-5rem)] min-w-2xs flex-col gap-5 rounded-2xl border-2 border-zinc-500 px-5 py-6">
-        <header className="flex items-center justify-center gap-3 text-2xl font-bold">
-          Admin
+      <div className="flex h-full max-h-[calc(100dvh-5rem)] min-w-2xs flex-col gap-5 overflow-auto rounded-2xl border-2 border-zinc-500 px-5 py-6">
+        <header className="flex flex-col items-center justify-center gap-3 text-2xl font-bold">
+          <button
+            className="cursor-pointer"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            <FiPower
+              size={40}
+              className="stroke-red-500 hover:stroke-red-700"
+            />
+          </button>
+          {session?.user.name}
         </header>
         <a
           className="flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-emerald-500 p-2 font-bold"
@@ -186,7 +219,8 @@ export function AdmApp() {
         >
           <FiBarChart /> BI
         </a>
-        <header className="border-b border-zinc-500 py-1 text-center">
+
+        <header className="border-b border-zinc-500 py-1 text-center font-bold text-sky-300">
           Tabelas
         </header>
         <div className="flex flex-col gap-1">
@@ -195,16 +229,31 @@ export function AdmApp() {
               key={table.name}
               className={
                 'cursor-pointer rounded-2xl p-2 ' +
-                (tableIndex === index
+                (currentTable?.name === table.name
                   ? ' bg-sky-600 hover:bg-sky-500'
                   : 'hover:bg-zinc-700')
               }
-              onClick={() => setTableIndex(index)}
+              onClick={() => setCurrentTable(table)}
             >
               {table.name}
             </button>
           ))}
         </div>
+
+        {/* <header className="border-b border-zinc-500 py-1 text-center font-bold text-sky-300">
+          Autenticação
+        </header>
+        <div className="flex flex-col gap-1">
+          <button
+            className={
+              'cursor-pointer rounded-2xl p-2 ' +
+              (false ? ' bg-sky-600 hover:bg-sky-500' : 'hover:bg-zinc-700')
+            }
+            onClick={() => {}}
+          >
+            Usuarios
+          </button>
+        </div> */}
       </div>
 
       <div className="flex h-full max-h-[calc(100dvh-5rem)] w-full flex-row items-center justify-center gap-5">
@@ -214,8 +263,8 @@ export function AdmApp() {
           onInspect={id => setPanelState({ id, state: PanelState.Inspecting })}
           onEdit={id => setPanelState({ id, state: PanelState.Editing })}
           onDelete={id => {
-            if (tableIndex !== undefined) {
-              tables[tableIndex]
+            if (currentTable !== undefined) {
+              currentTable
                 .delete(id)
                 .then(() => setUpdateHack(old => (old + 1) % 356));
             }
@@ -223,13 +272,13 @@ export function AdmApp() {
         />
 
         <div className="flex h-full w-3xl flex-col items-center justify-between gap-3 rounded-2xl border-2 border-zinc-500 px-5 py-6">
-          {tableIndex !== undefined && (
+          {currentTable !== undefined && (
             <header className="top-0 text-2xl font-bold">
-              {tables[tableIndex].name}
+              {currentTable.name}
             </header>
           )}
 
-          {tableIndex === undefined ? (
+          {currentTable === undefined ? (
             <></>
           ) : panelState.state === PanelState.None ? (
             <div className="flex flex-row items-center justify-center gap-3">
@@ -251,9 +300,9 @@ export function AdmApp() {
             </div>
           ) : panelState.state === PanelState.Adding ? (
             <AddRow
-              fields={tables[tableIndex].fields}
+              fields={currentTable.fields}
               onAdd={data => {
-                tables[tableIndex]
+                currentTable
                   .add(data)
                   .then(() => setUpdateHack(old => (old + 1) % 356));
                 setPanelState({ id: undefined, state: PanelState.None });
@@ -263,10 +312,10 @@ export function AdmApp() {
             <Inspect data={currentInspection ?? { id: 0 }} />
           ) : panelState.state === PanelState.Editing ? (
             <EditRow
-              fields={tables[tableIndex].fields}
+              fields={currentTable.fields}
               data={currentInspection}
               onEdit={(id, data) => {
-                tables[tableIndex]
+                currentTable
                   .update(id, data)
                   .then(() => setUpdateHack(old => (old + 1) % 356));
                 setPanelState({ id: undefined, state: PanelState.None });
