@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { openAPI } from 'better-auth/plugins';
 import { prisma } from './db';
+import { Role } from '../generated/prisma';
 
 export const auth = betterAuth({
   basePath: '/auth/api',
@@ -15,10 +16,10 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      permissions: {
-        type: 'number',
+      roles: {
+        type: 'string[]',
         required: true,
-        defaultValue: 1,
+        defaultValue: [],
         input: true,
       },
     },

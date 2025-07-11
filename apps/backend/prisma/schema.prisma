@@ -18,6 +18,11 @@ datasource db {
 
 // Authentication Models
 
+enum Role {
+  Update
+  Delete
+}
+
 model User {
   id            String    @id
   name          String
@@ -26,7 +31,7 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
-  permissions   Int
+  roles         Role[]
   sessions      Session[]
   accounts      Account[]
 

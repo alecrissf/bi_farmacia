@@ -26,15 +26,16 @@ export function CircularChart({
           data={data}
           cx={cx}
           cy={cy}
-          innerRadius="65%"
+          innerRadius="0%"
           outerRadius="80%"
-          paddingAngle={2}
+          paddingAngle={0}
           nameKey="name"
           dataKey="value"
           stroke=""
           label
           legendType="circle"
-          isAnimationActive={false}
+          animationDuration={600}
+          // isAnimationActive={false}
         >
           <Legend verticalAlign="bottom" layout="vertical" />
           {data.map((entry, index) => (
