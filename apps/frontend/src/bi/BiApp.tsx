@@ -133,25 +133,37 @@ export function BiApp() {
         </Card>
 
         <Card title="Total de Vendas por Categoria" isFullSize={isSlide}>
-          <CircularChart data={vendasPorCat} />
+          <CircularChart
+            data={vendasPorCat}
+            className={isSlide ? 'text-2xl' : 'text-base'}
+          />
         </Card>
 
         <Card
           title="Total de Vendas por Forma de Pagamento"
           isFullSize={isSlide}
         >
-          <CircularChart data={vendasPorPag} />
+          <CircularChart
+            data={vendasPorPag}
+            className={isSlide ? 'text-2xl' : 'text-base'}
+          />
         </Card>
 
         <Card title="Total de Vendas por Tipo de Promoção" isFullSize={isSlide}>
-          <CircularChart data={vendasPorProm} />
+          <CircularChart
+            data={vendasPorProm}
+            className={isSlide ? 'text-2xl' : 'text-base'}
+          />
         </Card>
 
         <Card
           title="Total de Vendas por Campanha de Marketing"
           isFullSize={isSlide}
         >
-          <CircularChart data={vendasPorMarketing} />
+          <CircularChart
+            data={vendasPorMarketing}
+            className={isSlide ? 'text-2xl' : 'text-base'}
+          />
         </Card>
       </GraphGrid>
     </div>
