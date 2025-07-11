@@ -1,65 +1,113 @@
 import useAsyncMemo from '@/hooks/useAsyncMemo';
 import { server } from '@/lib/server';
 import { Table } from './components/Table';
-import { FiBarChart, FiPlusSquare, FiXSquare } from 'react-icons/fi';
+import {
+  FiBarChart,
+  FiPlusSquare,
+  FiXSquare,
+  FiRefreshCw,
+} from 'react-icons/fi';
 import { useEffect, useState } from 'react';
 import { Inspect } from './components/Inspect';
+import { AddRow } from './components/AddRow';
 
 const tables = [
   {
     name: 'CategoriaProduto',
     get: () => server.categoria.get(),
     inspect: (id: number) => server.categoria({ id }).get(),
+    add: (data: any) => server.categoria.add.post(data),
+    fields: ['nome'],
   },
   {
     name: 'MarcaProduto',
     get: () => server.marca.get(),
     inspect: (id: number) => server.marca({ id }).get(),
+    add: (data: any) => server.marca.add.post(data),
+    fields: ['nome'],
   },
   {
     name: 'Produto',
     get: () => server.produto.get(),
     inspect: (id: number) => server.produto({ id }).get(),
+    add: (data: any) => server.produto.add.post(data),
+    fields: [
+      'codBarras',
+      'nome',
+      'preco',
+      'qtdEstoque',
+      'categoriaId',
+      'marcaId',
+    ],
   },
   {
     name: 'Lote',
     get: () => server.lote.get(),
     inspect: (id: number) => server.lote({ id }).get(),
+    add: (data: any) => server.lote.add.post(data),
+    fields: [
+      'codigo',
+      'produtoId',
+      'produto',
+      'dataValidade',
+      'dataRecebimento',
+      'qtdOriginal',
+    ],
   },
   {
     name: 'Cliente',
     get: () => server.cliente.get(),
     inspect: (id: number) => server.cliente({ id }).get(),
+    add: (data: any) => server.cliente.add.post(data),
+    fields: ['cpf', 'nome', 'vendas'],
   },
   {
     name: 'Endereco',
     get: () => server.endereco.get(),
     inspect: (id: number) => server.endereco({ id }).get(),
+    add: (data: any) => server.endereco.add.post(data),
+    fields: ['cidade', 'bairro', 'rua', 'numero', 'complemento', 'clienteId'],
   },
   {
     name: 'TipoPagamento',
     get: () => server.pagamento.get(),
     inspect: (id: number) => server.pagamento({ id }).get(),
+    add: (data: any) => server.pagamento.add.post(data),
+    fields: ['descricao'],
   },
   {
     name: 'Venda',
     get: () => server.vendas.get(),
     inspect: (id: number) => server.vendas({ id }).get(),
+    add: (data: any) => server.vendas.add.post(data),
+    fields: [
+      'dataVenda',
+      'clienteId',
+      'tipoPagamentoId',
+      'pedidos',
+      'campanhaMarketingId',
+    ],
   },
   {
     name: 'Pedido',
     get: () => server.pedido.get(),
     inspect: (id: number) => server.pedido({ id }).get(),
+    add: (data: any) => server.pedido.add.post(data),
+    fields: ['qtd', 'vendaId', 'produtoId', 'promocaoId'],
   },
   {
     name: 'Promocao',
     get: () => server.promocao.get(),
     inspect: (id: number) => server.promocao({ id }).get(),
+    add: (data: any) => server.promocao.add.post(data),
+    fields: ['nome', 'dataInicio', 'dataFim', 'tipo', 'desconto'],
   },
   {
     name: 'CampanhaMarketing',
     get: () => server.marketing.get(),
     inspect: (id: number) => server.marketing({ id }).get(),
+    add: (data: any) => server.marketing.add.post(data),
+    fields: ['nome', 'dataInicio', 'dataFim', 'tipo'],
   },
 ];
 
@@ -71,6 +119,8 @@ enum PanelState {
 }
 
 export function AdmApp() {
+  const [updateHack, setUpdateHack] = useState(true);
+
   const [tableIndex, setTableIndex] = useState<number>();
   const [panelState, setPanelState] = useState({
     id: undefined as number | undefined,
@@ -82,7 +132,7 @@ export function AdmApp() {
       tableIndex !== undefined
         ? tables[tableIndex].get().then(({ data }) => data)
         : null,
-    [tableIndex],
+    [tableIndex, updateHack],
   );
 
   const currentInspection = useAsyncMemo(
@@ -153,16 +203,32 @@ export function AdmApp() {
           {tableIndex === undefined ? (
             <></>
           ) : panelState.state === PanelState.None ? (
-            <button
-              className="flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-emerald-500 px-3 py-2 font-bold"
-              onClick={() =>
-                setPanelState({ id: undefined, state: PanelState.Adding })
-              }
-            >
-              <FiPlusSquare size={30} /> Adicionar Linha
-            </button>
+            <div className="flex flex-row items-center justify-center gap-3">
+              <button
+                className="flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-emerald-500 px-3 py-2 font-bold"
+                onClick={() =>
+                  setPanelState({ id: undefined, state: PanelState.Adding })
+                }
+              >
+                <FiPlusSquare size={30} /> Adicionar Linha
+              </button>
+
+              <button
+                className="flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-sky-500 px-3 py-2 font-bold"
+                onClick={() => setUpdateHack(old => !old)}
+              >
+                <FiRefreshCw size={30} /> Atualizar Tabela
+              </button>
+            </div>
           ) : panelState.state === PanelState.Adding ? (
-            <div>Adicionando</div>
+            <AddRow
+              fields={tables[tableIndex].fields}
+              onAdd={data => {
+                tables[tableIndex].add(data);
+                setPanelState({ id: undefined, state: PanelState.None });
+                setUpdateHack(old => !old);
+              }}
+            />
           ) : panelState.state === PanelState.Inspecting ? (
             <Inspect data={currentInspection ?? { id: 0 }} />
           ) : panelState.state === PanelState.Editing ? (

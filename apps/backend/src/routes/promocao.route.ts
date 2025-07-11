@@ -33,7 +33,7 @@ export const promocaoRoutes = new Elysia({ prefix: '/promocao' })
     };
   })
   .post(
-    'add',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {
