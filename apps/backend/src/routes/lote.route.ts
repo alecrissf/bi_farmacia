@@ -12,11 +12,11 @@ export const loteRoutes = new Elysia()
     return categoria;
   })
   .get('/lote/:id', async ({ params }) => {
-    const categoria = await findByCodigo(parseInt(params.id));
+    const categoria = await findByCodigo(params.id);
     return categoria;
   })
   .delete('/lote/:id', async ({ params }) => {
-    await removeByCodigo(parseInt(params.id));
+    await removeByCodigo(params.id);
     return {
       response: 'success removed',
     };
