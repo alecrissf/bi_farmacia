@@ -32,6 +32,11 @@ export const marcasProdutosRoutes = new Elysia({ prefix: '/marca' })
       response: 'success removed',
     };
   })
+  .delete(
+    '/:id',
+    ({ params: { id } }) => prisma.marcaProduto.delete({ where: { id } }),
+    { params: t.Object({ id: t.Number() }) },
+  )
   .post(
     '/add',
     async ({ body }) => {

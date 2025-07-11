@@ -36,6 +36,11 @@ export const campanhamarketingRoutes = new Elysia({ prefix: '/marketing' })
     },
     { params: t.Object({ name: t.String() }) },
   )
+  .delete(
+    '/:id',
+    ({ params: { id } }) => prisma.campanhaMarketing.delete({ where: { id } }),
+    { params: t.Object({ id: t.Number() }) },
+  )
   .post(
     '/add',
     async ({ body }) => {

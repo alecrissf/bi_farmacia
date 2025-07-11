@@ -31,6 +31,11 @@ export const clienteRoutes = new Elysia({ prefix: '/cliente' })
       response: 'success removed',
     };
   })
+  .delete(
+    '/:id',
+    ({ params: { id } }) => prisma.cliente.delete({ where: { id } }),
+    { params: t.Object({ id: t.Number() }) },
+  )
   .post(
     '/add',
     async ({ body }) => {

@@ -32,6 +32,11 @@ export const promocaoRoutes = new Elysia({ prefix: '/promocao' })
       response: 'success removed',
     };
   })
+  .delete(
+    '/:id',
+    ({ params: { id } }) => prisma.promocao.delete({ where: { id } }),
+    { params: t.Object({ id: t.Number() }) },
+  )
   .post(
     '/add',
     async ({ body }) => {

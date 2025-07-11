@@ -17,6 +17,7 @@ const tables = [
     get: () => server.categoria.get(),
     inspect: (id: number) => server.categoria({ id }).get(),
     add: (data: any) => server.categoria.add.post(data),
+    delete: (id: number) => server.categoria({ id }).delete(),
     fields: ['nome'],
   },
   {
@@ -24,6 +25,7 @@ const tables = [
     get: () => server.marca.get(),
     inspect: (id: number) => server.marca({ id }).get(),
     add: (data: any) => server.marca.add.post(data),
+    delete: (id: number) => server.marca({ id }).delete(),
     fields: ['nome'],
   },
   {
@@ -31,6 +33,7 @@ const tables = [
     get: () => server.produto.get(),
     inspect: (id: number) => server.produto({ id }).get(),
     add: (data: any) => server.produto.add.post(data),
+    delete: (id: number) => server.produto({ id }).delete(),
     fields: [
       'codBarras',
       'nome',
@@ -45,6 +48,7 @@ const tables = [
     get: () => server.lote.get(),
     inspect: (id: number) => server.lote({ id }).get(),
     add: (data: any) => server.lote.add.post(data),
+    delete: (id: number) => server.lote({ id }).delete(),
     fields: [
       'codigo',
       'produtoId',
@@ -59,6 +63,7 @@ const tables = [
     get: () => server.cliente.get(),
     inspect: (id: number) => server.cliente({ id }).get(),
     add: (data: any) => server.cliente.add.post(data),
+    delete: (id: number) => server.cliente({ id }).delete(),
     fields: ['cpf', 'nome', 'vendas'],
   },
   {
@@ -66,6 +71,7 @@ const tables = [
     get: () => server.endereco.get(),
     inspect: (id: number) => server.endereco({ id }).get(),
     add: (data: any) => server.endereco.add.post(data),
+    delete: (id: number) => server.endereco({ id }).delete(),
     fields: ['cidade', 'bairro', 'rua', 'numero', 'complemento', 'clienteId'],
   },
   {
@@ -73,6 +79,7 @@ const tables = [
     get: () => server.pagamento.get(),
     inspect: (id: number) => server.pagamento({ id }).get(),
     add: (data: any) => server.pagamento.add.post(data),
+    delete: (id: number) => server.pagamento({ id }).delete(),
     fields: ['descricao'],
   },
   {
@@ -80,6 +87,7 @@ const tables = [
     get: () => server.vendas.get(),
     inspect: (id: number) => server.vendas({ id }).get(),
     add: (data: any) => server.vendas.add.post(data),
+    delete: (id: number) => server.vendas({ id }).delete(),
     fields: [
       'dataVenda',
       'clienteId',
@@ -93,6 +101,7 @@ const tables = [
     get: () => server.pedido.get(),
     inspect: (id: number) => server.pedido({ id }).get(),
     add: (data: any) => server.pedido.add.post(data),
+    delete: (id: number) => server.pedido({ id }).delete(),
     fields: ['qtd', 'vendaId', 'produtoId', 'promocaoId'],
   },
   {
@@ -100,6 +109,7 @@ const tables = [
     get: () => server.promocao.get(),
     inspect: (id: number) => server.promocao({ id }).get(),
     add: (data: any) => server.promocao.add.post(data),
+    delete: (id: number) => server.promocao({ id }).delete(),
     fields: ['nome', 'dataInicio', 'dataFim', 'tipo', 'desconto'],
   },
   {
@@ -107,6 +117,7 @@ const tables = [
     get: () => server.marketing.get(),
     inspect: (id: number) => server.marketing({ id }).get(),
     add: (data: any) => server.marketing.add.post(data),
+    delete: (id: number) => server.marketing({ id }).delete(),
     fields: ['nome', 'dataInicio', 'dataFim', 'tipo'],
   },
 ];
@@ -119,7 +130,7 @@ enum PanelState {
 }
 
 export function AdmApp() {
-  const [updateHack, setUpdateHack] = useState(true);
+  const [updateHack, setUpdateHack] = useState(0);
 
   const [tableIndex, setTableIndex] = useState<number>();
   const [panelState, setPanelState] = useState({
@@ -190,7 +201,13 @@ export function AdmApp() {
           data={data ?? []}
           onInspect={id => setPanelState({ id, state: PanelState.Inspecting })}
           onEdit={id => setPanelState({ id, state: PanelState.Editing })}
-          onDelete={id => {}}
+          onDelete={id => {
+            if (tableIndex !== undefined) {
+              tables[tableIndex]
+                .delete(id)
+                .then(() => setUpdateHack(old => (old + 1) % 356));
+            }
+          }}
         />
 
         <div className="flex h-full w-3xl flex-col items-center justify-between gap-3 rounded-2xl border-2 border-zinc-500 px-5 py-6">
@@ -215,7 +232,7 @@ export function AdmApp() {
 
               <button
                 className="flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-sky-500 px-3 py-2 font-bold"
-                onClick={() => setUpdateHack(old => !old)}
+                onClick={() => setUpdateHack(old => (old + 1) % 356)}
               >
                 <FiRefreshCw size={30} /> Atualizar Tabela
               </button>
@@ -224,9 +241,10 @@ export function AdmApp() {
             <AddRow
               fields={tables[tableIndex].fields}
               onAdd={data => {
-                tables[tableIndex].add(data);
+                tables[tableIndex]
+                  .add(data)
+                  .then(() => setUpdateHack(old => (old + 1) % 356));
                 setPanelState({ id: undefined, state: PanelState.None });
-                setUpdateHack(old => !old);
               }}
             />
           ) : panelState.state === PanelState.Inspecting ? (

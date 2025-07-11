@@ -32,6 +32,11 @@ export const categoriaRoutes = new Elysia({ prefix: '/categoria' })
       response: 'success removed',
     };
   })
+  .delete(
+    '/:id',
+    ({ params: { id } }) => prisma.categoriaProduto.delete({ where: { id } }),
+    { params: t.Object({ id: t.Number() }) },
+  )
   .post(
     '/add',
     async ({ body }) => {

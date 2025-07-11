@@ -55,6 +55,11 @@ export const produtoRoutes = new Elysia({ prefix: '/produto' })
       response: 'success removed',
     };
   })
+  .delete(
+    '/:id',
+    ({ params: { id } }) => prisma.produto.delete({ where: { id } }),
+    { params: t.Object({ id: t.Number() }) },
+  )
   .post(
     '/add',
     async ({ body }) => {
