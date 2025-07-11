@@ -37,6 +37,18 @@ export const clienteRoutes = new Elysia({ prefix: '/cliente' })
     { params: t.Object({ id: t.Number() }) },
   )
   .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.cliente.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        cpf: t.String(),
+        nome: t.String(),
+      }),
+    },
+  )
+  .post(
     '/add',
     async ({ body }) => {
       await add(body);

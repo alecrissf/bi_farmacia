@@ -42,6 +42,20 @@ export const campanhamarketingRoutes = new Elysia({ prefix: '/marketing' })
     { params: t.Object({ id: t.Number() }) },
   )
   .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.campanhaMarketing.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        nome: t.String(),
+        dataInicio: t.Date(),
+        dataFim: t.Date(),
+        tipo: t.String(),
+      }),
+    },
+  )
+  .post(
     '/add',
     async ({ body }) => {
       await add(body);

@@ -61,6 +61,22 @@ export const produtoRoutes = new Elysia({ prefix: '/produto' })
     { params: t.Object({ id: t.Number() }) },
   )
   .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.produto.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        codBarras: t.String(),
+        nome: t.String(),
+        preco: t.Number(),
+        qtdEstoque: t.Number(),
+        categoriaId: t.Number(),
+        marcaId: t.Number(),
+      }),
+    },
+  )
+  .post(
     '/add',
     async ({ body }) => {
       await add(body);

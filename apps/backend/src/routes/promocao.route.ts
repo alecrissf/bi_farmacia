@@ -38,6 +38,21 @@ export const promocaoRoutes = new Elysia({ prefix: '/promocao' })
     { params: t.Object({ id: t.Number() }) },
   )
   .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.promocao.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        nome: t.String(),
+        dataInicio: t.Date(),
+        dataFim: t.Date(),
+        tipo: t.Enum(TipoPromocao),
+        desconto: t.Number(),
+      }),
+    },
+  )
+  .post(
     '/add',
     async ({ body }) => {
       await add(body);

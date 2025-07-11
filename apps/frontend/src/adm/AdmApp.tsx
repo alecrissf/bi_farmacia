@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Inspect } from './components/Inspect';
 import { AddRow } from './components/AddRow';
+import { EditRow } from './components/EditRow';
 
 const tables = [
   {
@@ -18,6 +19,7 @@ const tables = [
     inspect: (id: number) => server.categoria({ id }).get(),
     add: (data: any) => server.categoria.add.post(data),
     delete: (id: number) => server.categoria({ id }).delete(),
+    update: (id: number, data: any) => server.categoria({ id }).post(data),
     fields: ['nome'],
   },
   {
@@ -26,6 +28,7 @@ const tables = [
     inspect: (id: number) => server.marca({ id }).get(),
     add: (data: any) => server.marca.add.post(data),
     delete: (id: number) => server.marca({ id }).delete(),
+    update: (id: number, data: any) => server.marca({ id }).post(data),
     fields: ['nome'],
   },
   {
@@ -34,6 +37,7 @@ const tables = [
     inspect: (id: number) => server.produto({ id }).get(),
     add: (data: any) => server.produto.add.post(data),
     delete: (id: number) => server.produto({ id }).delete(),
+    update: (id: number, data: any) => server.produto({ id }).post(data),
     fields: [
       'codBarras',
       'nome',
@@ -49,6 +53,7 @@ const tables = [
     inspect: (id: number) => server.lote({ id }).get(),
     add: (data: any) => server.lote.add.post(data),
     delete: (id: number) => server.lote({ id }).delete(),
+    update: (id: number, data: any) => server.lote({ id }).post(data),
     fields: [
       'codigo',
       'produtoId',
@@ -64,6 +69,7 @@ const tables = [
     inspect: (id: number) => server.cliente({ id }).get(),
     add: (data: any) => server.cliente.add.post(data),
     delete: (id: number) => server.cliente({ id }).delete(),
+    update: (id: number, data: any) => server.cliente({ id }).post(data),
     fields: ['cpf', 'nome', 'vendas'],
   },
   {
@@ -72,6 +78,7 @@ const tables = [
     inspect: (id: number) => server.endereco({ id }).get(),
     add: (data: any) => server.endereco.add.post(data),
     delete: (id: number) => server.endereco({ id }).delete(),
+    update: (id: number, data: any) => server.endereco({ id }).post(data),
     fields: ['cidade', 'bairro', 'rua', 'numero', 'complemento', 'clienteId'],
   },
   {
@@ -80,6 +87,7 @@ const tables = [
     inspect: (id: number) => server.pagamento({ id }).get(),
     add: (data: any) => server.pagamento.add.post(data),
     delete: (id: number) => server.pagamento({ id }).delete(),
+    update: (id: number, data: any) => server.pagamento({ id }).post(data),
     fields: ['descricao'],
   },
   {
@@ -88,6 +96,7 @@ const tables = [
     inspect: (id: number) => server.vendas({ id }).get(),
     add: (data: any) => server.vendas.add.post(data),
     delete: (id: number) => server.vendas({ id }).delete(),
+    update: (id: number, data: any) => server.vendas({ id }).post(data),
     fields: [
       'dataVenda',
       'clienteId',
@@ -102,6 +111,7 @@ const tables = [
     inspect: (id: number) => server.pedido({ id }).get(),
     add: (data: any) => server.pedido.add.post(data),
     delete: (id: number) => server.pedido({ id }).delete(),
+    update: (id: number, data: any) => server.pedido({ id }).post(data),
     fields: ['qtd', 'vendaId', 'produtoId', 'promocaoId'],
   },
   {
@@ -110,6 +120,7 @@ const tables = [
     inspect: (id: number) => server.promocao({ id }).get(),
     add: (data: any) => server.promocao.add.post(data),
     delete: (id: number) => server.promocao({ id }).delete(),
+    update: (id: number, data: any) => server.promocao({ id }).post(data),
     fields: ['nome', 'dataInicio', 'dataFim', 'tipo', 'desconto'],
   },
   {
@@ -118,6 +129,7 @@ const tables = [
     inspect: (id: number) => server.marketing({ id }).get(),
     add: (data: any) => server.marketing.add.post(data),
     delete: (id: number) => server.marketing({ id }).delete(),
+    update: (id: number, data: any) => server.marketing({ id }).post(data),
     fields: ['nome', 'dataInicio', 'dataFim', 'tipo'],
   },
 ];
@@ -250,7 +262,16 @@ export function AdmApp() {
           ) : panelState.state === PanelState.Inspecting ? (
             <Inspect data={currentInspection ?? { id: 0 }} />
           ) : panelState.state === PanelState.Editing ? (
-            <div>Editando</div>
+            <EditRow
+              fields={tables[tableIndex].fields}
+              data={currentInspection}
+              onEdit={(id, data) => {
+                tables[tableIndex]
+                  .update(id, data)
+                  .then(() => setUpdateHack(old => (old + 1) % 356));
+                setPanelState({ id: undefined, state: PanelState.None });
+              }}
+            />
           ) : (
             <div>Invalid State????</div>
           )}

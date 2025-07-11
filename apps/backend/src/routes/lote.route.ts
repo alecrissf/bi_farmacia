@@ -37,6 +37,21 @@ export const loteRoutes = new Elysia({ prefix: '/lote' })
     { params: t.Object({ id: t.Number() }) },
   )
   .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.lote.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        codigo: t.String(), //string;
+        produtoId: t.Number(),
+        dataValidade: t.Date(),
+        dataRecebimento: t.Date(),
+        qtdOriginal: t.Number(),
+      }),
+    },
+  )
+  .post(
     '/add',
     async ({ body }) => {
       await add(body);

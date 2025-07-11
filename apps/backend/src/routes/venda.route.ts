@@ -35,6 +35,20 @@ export const vendasRoutes = new Elysia({ prefix: '/vendas' })
     };
   })
   .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.venda.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        dataVenda: t.Date(),
+        clienteId: t.Number(),
+        tipoPagamentoId: t.Number(),
+        campanhaMarketingId: t.Number(),
+      }),
+    },
+  )
+  .post(
     '/add',
     async ({ body }) => {
       await add(body);

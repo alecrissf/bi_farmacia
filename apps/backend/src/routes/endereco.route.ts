@@ -5,6 +5,7 @@ import {
   findById,
   removeById,
 } from '../handler/endereco.handler';
+import { prisma } from '../lib/db';
 
 export const enderecoRoutes = new Elysia({ prefix: '/endereco' })
   .get('/', async () => {
@@ -21,6 +22,22 @@ export const enderecoRoutes = new Elysia({ prefix: '/endereco' })
       response: 'success removed',
     };
   })
+  .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.endereco.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        cidade: t.String(), //string;
+        bairro: t.String(),
+        rua: t.String(),
+        numero: t.Number(),
+        complemento: t.String(),
+        clienteId: t.Number(), //number;
+      }),
+    },
+  )
   .post(
     '/add',
     async ({ body }) => {

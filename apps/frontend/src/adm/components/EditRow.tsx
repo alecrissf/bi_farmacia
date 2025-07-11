@@ -1,15 +1,33 @@
-import { useState } from 'react';
-import { FiPlusSquare } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { FiEdit } from 'react-icons/fi';
 
-export interface AddRowProps {
+export interface EditRowProps {
   fields: string[];
-  onAdd?: (data: object) => void;
+  data: any;
+  onEdit?: (id: number, data: object) => void;
 }
 
-export function AddRow({ fields, onAdd }: AddRowProps) {
-  const [data, setData] = useState(
+export function EditRow({ fields, data, onEdit }: EditRowProps) {
+  const [, setWeirdHack] = useState(false);
+
+  const [updatedData, setUpdatedData] = useState(
     Object.fromEntries(fields.map(f => [f, ''])),
   );
+  const [id, setId] = useState<number>();
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      setUpdatedData(old => {
+        for (const k in old) {
+          old[k] = data[k];
+        }
+        setId(data.id);
+        setWeirdHack(o => !o);
+        return old;
+      });
+    }
+  }, [data]);
 
   return (
     <div className="flex max-h-full w-full flex-col gap-4 overflow-auto">
@@ -23,9 +41,12 @@ export function AddRow({ fields, onAdd }: AddRowProps) {
                   <input
                     type="text"
                     className="w-full rounded-tr-xl rounded-br-xl px-5 py-2"
-                    value={data[field]}
+                    value={updatedData[field]}
                     onChange={e =>
-                      setData(old => ({ ...old, [field]: e.target.value }))
+                      setUpdatedData(old => ({
+                        ...old,
+                        [field]: e.target.value,
+                      }))
                     }
                   />
                 </td>
@@ -37,9 +58,9 @@ export function AddRow({ fields, onAdd }: AddRowProps) {
 
       <button
         className="flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-emerald-500 px-3 py-2 font-bold"
-        onClick={() => onAdd?.(data)}
+        onClick={() => onEdit?.(id ?? -1, updatedData)}
       >
-        <FiPlusSquare size={30} /> Adicionar
+        <FiEdit size={30} /> Atualizar
       </button>
     </div>
   );

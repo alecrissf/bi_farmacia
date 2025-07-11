@@ -1,5 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { findAll, add, findById, removeById } from '../handler/pedido.handler';
+import { prisma } from '../lib/db';
 
 export const pedidoRoutes = new Elysia({ prefix: '/pedido' })
   .get('/', async () => {
@@ -16,6 +17,20 @@ export const pedidoRoutes = new Elysia({ prefix: '/pedido' })
       response: 'success removed',
     };
   })
+  .post(
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.pedido.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        qtd: t.Number(),
+        vendaId: t.Number(),
+        produtoId: t.Number(),
+        promocaoId: t.Optional(t.Number()),
+      }),
+    },
+  )
   .post(
     '/add',
     async ({ body }) => {
