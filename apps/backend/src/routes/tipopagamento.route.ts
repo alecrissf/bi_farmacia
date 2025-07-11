@@ -5,24 +5,36 @@ import {
   findByPayment,
   removeByPayment,
 } from '../handler/tipopagamento.handler';
+import { prisma } from '../lib/db';
 
-export const tipoPagamentoRoutes = new Elysia()
-  .get('/pagamento', async () => {
+export const tipoPagamentoRoutes = new Elysia({ prefix: '/pagamento' })
+  .get('/', async () => {
     const pedidos = await findAll();
     return pedidos;
   })
-  .get('/pagamento/:id', async ({ params }) => {
+  .get('/:id', async ({ params }) => {
     const pedido = await findByPayment(parseInt(params.id));
     return pedido;
   })
-  .delete('/pagamento/:id', async ({ params }) => {
+  .delete('/:id', async ({ params }) => {
     await removeByPayment(parseInt(params.id));
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/pagamento',
+    '/:id',
+    ({ params: { id }, body }) =>
+      prisma.tipoPagamento.update({ where: { id }, data: body }),
+    {
+      params: t.Object({ id: t.Number() }),
+      body: t.Object({
+        descricao: t.String(),
+      }),
+    },
+  )
+  .post(
+    '/add',
     async ({ body }) => {
       await add(body);
       return {
@@ -31,7 +43,6 @@ export const tipoPagamentoRoutes = new Elysia()
     },
     {
       body: t.Object({
-        vendas: t.Number(),
         descricao: t.String(),
       }),
     },

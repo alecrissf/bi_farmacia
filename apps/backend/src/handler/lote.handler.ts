@@ -10,11 +10,11 @@ export async function add(data: AddLoteDto) {
   await Repository.add(data);
 }
 
-export async function findByCodigo(id: number) {
+export async function findByCodigo(id: string) {
   const result = await Repository.findByCodigo(id);
   return result;
 }
 
-export async function removeByCodigo(id: number) {
+export async function removeByCodigo(id: string) {
   await Repository.removeByCodigo(id);
 }

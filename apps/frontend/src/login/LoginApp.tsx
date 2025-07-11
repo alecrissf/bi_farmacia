@@ -12,6 +12,7 @@ export function LoginApp() {
       password: pass,
       callbackURL: '/adm',
     });
+    console.error(error);
   }, [pass, email]);
 
   return (
