@@ -1,7 +1,5 @@
 export function AdmApp() {
   return (
-    <div>
-      <h1>ADM App</h1>
-    </div>
+    <div className="flex min-h-dvh w-full flex-col items-center justify-center text-white"></div>
   );
 }

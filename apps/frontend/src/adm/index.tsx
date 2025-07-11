@@ -1,5 +1,5 @@
 import { renderFrontend } from '@/utils/renderFrontend';
-import '../reset.css';
+import './index.css';
 import { AdmApp } from './AdmApp';
 
 renderFrontend(<AdmApp />);
