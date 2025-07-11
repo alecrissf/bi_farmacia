@@ -11,12 +11,12 @@ export const clienteRoutes = new Elysia()
     const categoria = await findAll();
     return categoria;
   })
-  .get('/cliente/:name', async ({ params }) => {
-    const categoria = await findByCpf(params.name);
+  .get('/cliente/:cpf', async ({ params }) => {
+    const categoria = await findByCpf(params.cpf);
     return categoria;
   })
-  .delete('/cliente/:name', async ({ params }) => {
-    await removeByCpf(params.name);
+  .delete('/cliente/:cpf', async ({ params }) => {
+    await removeByCpf(params.cpf);
     return {
       response: 'success removed',
     };

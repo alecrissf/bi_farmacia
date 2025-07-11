@@ -22,7 +22,7 @@ export const campanhamarketingRoutes = new Elysia()
     };
   })
   .post(
-    '/',
+    '/marketing',
     async ({ body }) => {
       await add(body);
       return {

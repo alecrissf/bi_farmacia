@@ -46,7 +46,7 @@ export async function getChartServerData() {
           : COLORS[index % COLORS.length],
     }));
 
-  const { data: vendas } = await server.vendas.get();
+  const { data: vendas } = await server.vendas.ext.get();
   if (vendas) {
     const vendasPorCatData: Record<string, number> = {};
     const vendasPorMarketingData: Record<string, number> = {};

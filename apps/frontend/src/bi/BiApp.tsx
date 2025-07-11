@@ -114,14 +114,18 @@ export function BiApp() {
           </div>
         </div>
 
-        <Card title="Top 5 Produtos Mais Vendidos" isFullSize={isSlide}>
-          <ResponsiveContainer className={isSlide ? 'text-3xl' : 'text-sm'}>
+        <Card
+          title="Top 5 Produtos Mais Vendidos"
+          isFullSize={isSlide}
+          className="col-span-2"
+        >
+          <ResponsiveContainer className={isSlide ? 'text-2xl' : 'text-sm'}>
             <BarChart
               data={topProducts}
               margin={{ top: 90, left: 20, right: 20 }}
             >
               <XAxis dataKey="value" />
-              <Bar dataKey="value" isAnimationActive={false}>
+              <Bar dataKey="value" animationDuration={600}>
                 <LabelList dataKey="name" position="top" />
               </Bar>
             </BarChart>
@@ -178,7 +182,7 @@ function GraphGrid({ isSlide, slideState, children }: GraphGridProps) {
           () => {
             setSlideIndex(old => (old + 1) % children.length);
           },
-          slideState == SlideState.Normal ? 3000 : 1000,
+          slideState == SlideState.Normal ? 3000 : 1800,
         );
       }
 

@@ -7,6 +7,23 @@ export const vendasRoutes = new Elysia()
     const pedidos = await findAll();
     return pedidos;
   })
+  .get('/vendas/ext', () =>
+    prisma.venda.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+      include: {
+        tipoPagamento: true,
+        campanhaMarketing: true,
+        pedidos: {
+          include: {
+            produto: { include: { categoria: true } },
+            promocao: true,
+          },
+        },
+      },
+    }),
+  )
   .get('/vendas/:id', async ({ params }) => {
     const pedido = await findById(parseInt(params.id));
     return pedido;
