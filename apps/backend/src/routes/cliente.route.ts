@@ -5,24 +5,34 @@ import {
   findByCpf,
   removeByCpf,
 } from '../handler/cliente.handler';
+import { prisma } from '../lib/db';
 
-export const clienteRoutes = new Elysia()
-  .get('/cliente', async () => {
+export const clienteRoutes = new Elysia({ prefix: '/cliente' })
+  .get('/', async () => {
     const categoria = await findAll();
     return categoria;
   })
-  .get('/cliente/:cpf', async ({ params }) => {
+  .get(
+    '/:id',
+    async ({ params: { id } }) => prisma.cliente.findUnique({ where: { id } }),
+    {
+      params: t.Object({
+        id: t.Number(),
+      }),
+    },
+  )
+  .get('/cpf/:cpf', async ({ params }) => {
     const categoria = await findByCpf(params.cpf);
     return categoria;
   })
-  .delete('/cliente/:cpf', async ({ params }) => {
+  .delete('/cpf/:cpf', async ({ params }) => {
     await removeByCpf(params.cpf);
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/cliente',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {

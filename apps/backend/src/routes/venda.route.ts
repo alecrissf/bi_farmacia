@@ -2,12 +2,12 @@ import { Elysia, t } from 'elysia';
 import { findAll, add, findById, removeById } from '../handler/venda.handler';
 import { prisma } from '../lib/db';
 
-export const vendasRoutes = new Elysia()
-  .get('/vendas', async () => {
+export const vendasRoutes = new Elysia({ prefix: '/vendas' })
+  .get('/', async () => {
     const pedidos = await findAll();
     return pedidos;
   })
-  .get('/vendas/ext', () =>
+  .get('/ext', () =>
     prisma.venda.findMany({
       orderBy: {
         id: 'desc',
@@ -24,18 +24,18 @@ export const vendasRoutes = new Elysia()
       },
     }),
   )
-  .get('/vendas/:id', async ({ params }) => {
+  .get('/:id', async ({ params }) => {
     const pedido = await findById(parseInt(params.id));
     return pedido;
   })
-  .delete('/vendas/:id', async ({ params }) => {
+  .delete('/:id', async ({ params }) => {
     await removeById(parseInt(params.id));
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/vendas',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {

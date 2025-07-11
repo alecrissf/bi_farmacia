@@ -6,23 +6,23 @@ import {
   removeByCodigo,
 } from '../handler/lote.handler';
 
-export const loteRoutes = new Elysia()
-  .get('/lote', async () => {
+export const loteRoutes = new Elysia({ prefix: '/lote' })
+  .get('/', async () => {
     const categoria = await findAll();
     return categoria;
   })
-  .get('/lote/:id', async ({ params }) => {
+  .get('/:id', async ({ params }) => {
     const categoria = await findByCodigo(params.id);
     return categoria;
   })
-  .delete('/lote/:id', async ({ params }) => {
+  .delete('/:id', async ({ params }) => {
     await removeByCodigo(params.id);
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/lote',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {

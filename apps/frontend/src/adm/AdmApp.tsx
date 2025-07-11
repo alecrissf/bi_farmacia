@@ -3,19 +3,64 @@ import { server } from '@/lib/server';
 import { Table } from './components/Table';
 import { FiBarChart, FiPlusSquare, FiXSquare } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
+import { Inspect } from './components/Inspect';
 
 const tables = [
-  { name: 'CategoriaProduto', get: () => server.categoria.get() },
-  { name: 'MarcaProduto', get: () => server.marca.get() },
-  { name: 'Produto', get: () => server.produto.get() },
-  { name: 'Lote', get: () => server.lote.get() },
-  { name: 'Cliente', get: () => server.cliente.get() },
-  { name: 'Endereco', get: () => server.endereco.get() },
-  { name: 'TipoPagamento', get: () => server.pagamento.get() },
-  { name: 'Venda', get: () => server.vendas.get() },
-  { name: 'Pedido', get: () => server.pedido.get() },
-  { name: 'Promocao', get: () => server.promocao.get() },
-  { name: 'CampanhaMarketing', get: () => server.marketing.get() },
+  {
+    name: 'CategoriaProduto',
+    get: () => server.categoria.get(),
+    inspect: (id: number) => server.categoria({ id }).get(),
+  },
+  {
+    name: 'MarcaProduto',
+    get: () => server.marca.get(),
+    inspect: (id: number) => server.marca({ id }).get(),
+  },
+  {
+    name: 'Produto',
+    get: () => server.produto.get(),
+    inspect: (id: number) => server.produto({ id }).get(),
+  },
+  {
+    name: 'Lote',
+    get: () => server.lote.get(),
+    inspect: (id: number) => server.lote({ id }).get(),
+  },
+  {
+    name: 'Cliente',
+    get: () => server.cliente.get(),
+    inspect: (id: number) => server.cliente({ id }).get(),
+  },
+  {
+    name: 'Endereco',
+    get: () => server.endereco.get(),
+    inspect: (id: number) => server.endereco({ id }).get(),
+  },
+  {
+    name: 'TipoPagamento',
+    get: () => server.pagamento.get(),
+    inspect: (id: number) => server.pagamento({ id }).get(),
+  },
+  {
+    name: 'Venda',
+    get: () => server.vendas.get(),
+    inspect: (id: number) => server.vendas({ id }).get(),
+  },
+  {
+    name: 'Pedido',
+    get: () => server.pedido.get(),
+    inspect: (id: number) => server.pedido({ id }).get(),
+  },
+  {
+    name: 'Promocao',
+    get: () => server.promocao.get(),
+    inspect: (id: number) => server.promocao({ id }).get(),
+  },
+  {
+    name: 'CampanhaMarketing',
+    get: () => server.marketing.get(),
+    inspect: (id: number) => server.marketing({ id }).get(),
+  },
 ];
 
 enum PanelState {
@@ -38,6 +83,16 @@ export function AdmApp() {
         ? tables[tableIndex].get().then(({ data }) => data)
         : null,
     [tableIndex],
+  );
+
+  const currentInspection = useAsyncMemo(
+    async () =>
+      panelState.state !== PanelState.None &&
+      panelState.id !== undefined &&
+      tableIndex !== undefined
+        ? tables[tableIndex].inspect(panelState.id).then(({ data }) => data)
+        : null,
+    [panelState, tableIndex],
   );
 
   useEffect(() => {
@@ -88,7 +143,13 @@ export function AdmApp() {
           onDelete={id => {}}
         />
 
-        <div className="flex h-full w-3xl flex-col items-center justify-center gap-3 rounded-2xl border-2 border-zinc-500 px-5 py-6">
+        <div className="flex h-full w-3xl flex-col items-center justify-between gap-3 rounded-2xl border-2 border-zinc-500 px-5 py-6">
+          {tableIndex !== undefined && (
+            <header className="top-0 text-2xl font-bold">
+              {tables[tableIndex].name}
+            </header>
+          )}
+
           {tableIndex === undefined ? (
             <></>
           ) : panelState.state === PanelState.None ? (
@@ -103,7 +164,7 @@ export function AdmApp() {
           ) : panelState.state === PanelState.Adding ? (
             <div>Adicionando</div>
           ) : panelState.state === PanelState.Inspecting ? (
-            <div>Inspecionando</div>
+            <Inspect data={currentInspection ?? { id: 0 }} />
           ) : panelState.state === PanelState.Editing ? (
             <div>Editando</div>
           ) : (

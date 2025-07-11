@@ -6,23 +6,23 @@ import {
   removeByPayment,
 } from '../handler/tipopagamento.handler';
 
-export const tipoPagamentoRoutes = new Elysia()
-  .get('/pagamento', async () => {
+export const tipoPagamentoRoutes = new Elysia({ prefix: '/pagamento' })
+  .get('/', async () => {
     const pedidos = await findAll();
     return pedidos;
   })
-  .get('/pagamento/:id', async ({ params }) => {
+  .get('/:id', async ({ params }) => {
     const pedido = await findByPayment(parseInt(params.id));
     return pedido;
   })
-  .delete('/pagamento/:id', async ({ params }) => {
+  .delete('/:id', async ({ params }) => {
     await removeByPayment(parseInt(params.id));
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/pagamento',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {

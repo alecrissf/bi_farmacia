@@ -5,24 +5,35 @@ import {
   findByName,
   removeByName,
 } from '../handler/marcaproduto.handler';
+import { prisma } from '../lib/db';
 
-export const marcasProdutosRoutes = new Elysia()
-  .get('/marca', async () => {
+export const marcasProdutosRoutes = new Elysia({ prefix: '/marca' })
+  .get('/', async () => {
     const categoria = await findAll();
     return categoria;
   })
-  .get('/marca/:name', async ({ params }) => {
+  .get(
+    '/:id',
+    async ({ params: { id } }) =>
+      prisma.marcaProduto.findUnique({ where: { id } }),
+    {
+      params: t.Object({
+        id: t.Number(),
+      }),
+    },
+  )
+  .get('/name/:name', async ({ params }) => {
     const categoria = await findByName(params.name);
     return categoria;
   })
-  .delete('/marca/:name', async ({ params }) => {
+  .delete('/name/:name', async ({ params }) => {
     await removeByName(params.name);
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/marca',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {

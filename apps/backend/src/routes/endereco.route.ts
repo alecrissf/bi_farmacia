@@ -6,23 +6,23 @@ import {
   removeById,
 } from '../handler/endereco.handler';
 
-export const enderecoRoutes = new Elysia()
-  .get('/endereco', async () => {
+export const enderecoRoutes = new Elysia({ prefix: '/endereco' })
+  .get('/', async () => {
     const categoria = await findAll();
     return categoria;
   })
-  .get('/endereco/:id', async ({ params }) => {
+  .get('/:id', async ({ params }) => {
     const categoria = await findById(parseInt(params.id));
     return categoria;
   })
-  .delete('/endereco/:id', async ({ params }) => {
+  .delete('/:id', async ({ params }) => {
     await removeById(parseInt(params.id));
     return {
       response: 'success removed',
     };
   })
   .post(
-    '/endereco',
+    '/add',
     async ({ body }) => {
       await add(body);
       return {
